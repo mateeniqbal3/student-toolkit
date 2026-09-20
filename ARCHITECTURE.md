@@ -39,6 +39,20 @@ The dependency rule runs one way: `app` then `components` then `lib`. Nothing in
 `lib/<domain>` imports React, which is what makes the arithmetic directly
 unit-testable and keeps it out of any render path.
 
+## The tool registry
+
+`src/lib/tools.ts` is the single source of truth for the nine tools. It drives
+navigation, the home grid, the sitemap, and per-route metadata, so adding a tool
+is mostly a matter of adding an entry.
+
+It holds data only, never components. Client components import it, and anything
+an imported module references is bundled for the browser whether or not the
+browser uses it. Icons therefore live separately in `src/lib/tool-icons.ts`,
+read only by server components, which renders them into HTML at no client cost.
+
+User-facing copy lives in the registry rather than inline in JSX. That is the
+seam Urdu translations plug into later.
+
 ## Persistence
 
 Two stores, chosen by size and access pattern.

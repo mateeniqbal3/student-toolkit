@@ -32,7 +32,9 @@ npm run format        # prettier --write .
 npm run test          # vitest run
 npm run test:watch    # vitest
 npm run build         # next build
+npm run budget        # measure gzipped JS per route against the budget
 npm run e2e           # playwright (needs a build first)
+npm run icons         # regenerate the PWA icons from scripts/generate-icons.mjs
 ```
 
 CI runs typecheck, lint, format:check, test, build, then the Playwright smoke
@@ -46,8 +48,12 @@ suite. All of it must pass before merge.
   scales, unit conversion tables, citation formatting, percentage maths. This is
   where the unit tests point, and it keeps computation out of render paths.
 - **Heavy libraries are dynamically imported.** `pdf-lib`, `pdf.js`, and
-  `citation-js` must never land in the initial bundle. The home route budget is
-  150KB gzipped and it is checked, not assumed.
+  `citation-js` must never land in the initial bundle. Run `npm run budget`
+  after a build: it measures the real gzipped JavaScript per route and fails
+  over the limit. CI runs it too. Note that anything imported by a client
+  component reaches the browser even if only a server component renders it,
+  which is why tool icons live in `src/lib/tool-icons.ts` rather than on the
+  registry in `src/lib/tools.ts`.
 - **Every tool gets its own indexable route** (`/gpa-calculator`,
   `/citation-generator`, and so on) with its own metadata. That is how students
   find this on Google, so it is a feature, not a routing detail.
