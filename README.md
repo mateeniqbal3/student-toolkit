@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Student Toolkit
 
-## Getting Started
+Nine tools every university student needs, in one fast app that works without a
+connection. Free forever, no account, no ads, no tracking.
 
-First, run the development server:
+> **Status:** in active development. Phase 0 (scaffolding and CI) is complete;
+> the tools are landing phase by phase. Screenshots go here once Phase 1 ships.
+
+## Why it exists
+
+Most student calculators are ad-riddled single-purpose pages that need a good
+connection and quietly upload whatever you type. This is one app, built for a
+mid-range Android phone on a weak connection, where everything except the AI
+assistant runs entirely in your browser.
+
+## The tools
+
+| Tool                    | What it does                                                                                                                                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GPA and CGPA calculator | Semester GPA and cumulative CGPA across pluggable grading scales, including Pakistani HEC, 4.0, 5.0, 10-point, percentage, and a custom-scale editor. Solves for the GPA needed to hit a target CGPA. |
+| Percentage calculator   | Every mode students actually need, each showing the formula so it teaches rather than just answers.                                                                                                   |
+| Unit converter          | Sixteen categories including live currency rates, cached for offline use.                                                                                                                             |
+| Citation generator      | APA 7, MLA 9, Chicago 17, IEEE, and Harvard, auto-filled from a DOI, ISBN, arXiv, or PubMed ID.                                                                                                       |
+| Timetable maker         | Weekly grid with conflict detection, exportable to PNG, PDF, and `.ics` for Google Calendar.                                                                                                          |
+| Pomodoro timer          | Drift-free timing that stays accurate when your phone sleeps, with session history.                                                                                                                   |
+| Notes organizer         | Markdown with KaTeX maths, folders, tags, and instant full-text search.                                                                                                                               |
+| PDF tools               | Merge, split, reorder, rotate, watermark, compress, convert, and extract, all in your browser.                                                                                                        |
+| AI study assistant      | Explain, summarize, make flashcards, quiz you, and solve step by step.                                                                                                                                |
+
+## Privacy
+
+Tools 1 through 8 make **no network requests at all**. Your grades, notes,
+timetables, and PDFs are stored in your own browser and never sent anywhere.
+There is no account, no database, and no analytics cookie.
+
+The AI assistant is the one exception, because it has to reach a language model.
+It sends only the message you type. You can also supply your own free API key in
+settings, in which case your messages go straight to the provider.
+
+## Local setup
+
+Requires Node 22 or newer.
 
 ```bash
+git clone https://github.com/mateeniqbal3/student-toolkit.git
+cd student-toolkit
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No API keys are needed to run or develop tools 1 through 8. Copy `.env.example`
+to `.env.local` only if you want the AI assistant to use a shared key; see
+`DEPLOY.md` for what each variable does.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Next.js 16 (App Router) with React 19 and TypeScript in strict mode. Tailwind
+CSS v4 with shadcn/ui and lucide-react. Dexie over IndexedDB for persistence.
+Vitest and React Testing Library for unit tests, Playwright for end-to-end.
+ESLint, Prettier, and Husky. GitHub Actions for CI, Vercel for hosting.
 
-## Learn More
+## Documentation
 
-To learn more about Next.js, take a look at the following resources:
+- [`CLAUDE.md`](./CLAUDE.md) — conventions and how to work in this repo
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md) — data models, IndexedDB schema, module boundaries
+- [`DEPLOY.md`](./DEPLOY.md) — Vercel and Cloudflare Pages deployment
+- [`CONTRIBUTING.md`](./CONTRIBUTING.md) — how to contribute
+- [`DECISIONS.md`](./DECISIONS.md) — why things are the way they are
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT. See [`LICENSE`](./LICENSE).
