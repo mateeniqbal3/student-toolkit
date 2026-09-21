@@ -106,6 +106,8 @@ test.describe("Flashcards", () => {
     await page.getByRole("button", { name: "Study now" }).click();
     await page.getByRole("button", { name: "Show answer" }).click();
     await page.getByRole("button", { name: /Easy/ }).click();
+    // The answer is saved once the session moves on; reload after that.
+    await expect(page.getByRole("region", { name: "Session finished" })).toBeVisible();
 
     await page.reload();
     await expect(page.getByRole("heading", { name: "Persistent", level: 3 })).toBeVisible();
