@@ -86,10 +86,12 @@ export function SourceFinder({
   }
 
   async function add(item: CslItem, force: boolean) {
+    const submitted = query;
     const added = await onAdd(item, force);
     if (added) {
       setState({ status: "idle" });
-      setQuery("");
+      // Only clear what was added: the student may already be pasting the next one.
+      setQuery((current) => (current === submitted ? "" : current));
     } else if (state.status === "found") {
       setState({ ...state, duplicate: true });
     }

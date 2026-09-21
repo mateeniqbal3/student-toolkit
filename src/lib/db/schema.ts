@@ -3,6 +3,7 @@ import Dexie, { type EntityTable, type Table } from "dexie";
 import type { CitationStyleId, CslItem } from "@/lib/citation/types";
 import type { RateTable } from "@/lib/currency/rates";
 import type { Course } from "@/lib/gpa/calculate";
+import type { TimetableEntry, TimetableSettings } from "@/lib/timetable/types";
 import type { GradeDefinition } from "@/lib/gpa/scales";
 
 /**
@@ -66,12 +67,27 @@ export interface CitationRecord {
   item: CslItem;
 }
 
+/**
+ * One named timetable — a semester, or one of several options a student is
+ * weighing up. Its classes are embedded: they are always read together, and
+ * one `put` saves the whole week atomically.
+ */
+export interface TimetableRecord {
+  id: number;
+  name: string;
+  createdAt: number;
+  updatedAt: number;
+  settings: TimetableSettings;
+  entries: TimetableEntry[];
+}
+
 class StudentToolkitDatabase extends Dexie {
   semesters!: EntityTable<SemesterRecord, "id">;
   gradingScales!: EntityTable<GradingScaleRecord, "id">;
   currencyRates!: Table<CurrencyRateRecord, string>;
   citationProjects!: EntityTable<CitationProjectRecord, "id">;
   citations!: EntityTable<CitationRecord, "id">;
+  timetables!: EntityTable<TimetableRecord, "id">;
 
   constructor() {
     super("student-toolkit");
@@ -94,6 +110,11 @@ class StudentToolkitDatabase extends Dexie {
     this.version(3).stores({
       citationProjects: "++id, name",
       citations: "++id, projectId, createdAt",
+    });
+
+    // Version 4 — the timetable maker. Classes are embedded in the timetable.
+    this.version(4).stores({
+      timetables: "++id, name, updatedAt",
     });
   }
 }

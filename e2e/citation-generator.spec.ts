@@ -79,6 +79,7 @@ test.describe("Citation generator", () => {
     await mockLookups(page);
     await page.goto("/citation-generator");
     await findAndAdd(page, "10.1038/nphys1170");
+    await expect(references(page)).toContainText("References (1)");
 
     await page.getByLabel("Find a source").fill("10.1038/nphys1170");
     await page.getByRole("button", { name: "Find", exact: true }).click();
@@ -196,7 +197,7 @@ test.describe("Citation generator", () => {
     await expect(references(page)).toContainText("References (1)");
 
     await page.getByRole("button", { name: "New bibliography" }).click();
-    await page.getByLabel("Bibliography", { exact: true }).fill("Thesis chapter 2");
+    await page.getByRole("textbox", { name: "Bibliography" }).fill("Thesis chapter 2");
     await page.getByRole("button", { name: "Done renaming" }).click();
 
     await expect(references(page)).toContainText("References (0)");

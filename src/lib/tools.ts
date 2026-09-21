@@ -72,7 +72,7 @@ export const TOOLS: readonly Tool[] = [
     tagline: "A weekly class grid that catches clashes",
     description:
       "Build a weekly class timetable with conflict detection, colour coding, and multiple saved timetables. Export to PNG, a print-optimised PDF, or an .ics file that imports straight into Google Calendar.",
-    status: "coming-soon",
+    status: "available",
     offline: true,
     keywords: ["timetable", "class schedule", "conflict", "ics", "calendar"],
   },

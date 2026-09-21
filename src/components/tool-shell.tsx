@@ -18,8 +18,8 @@ export function ToolShell({ tool, children }: { tool: Tool; children: ReactNode 
   const Icon = TOOL_ICONS[tool.slug];
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:py-10">
-      <header className="flex flex-col gap-3">
+    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:py-10 print:max-w-none print:p-0">
+      <header className="flex flex-col gap-3 print:hidden">
         <div className="flex items-center gap-3">
           <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-xl">
             <Icon className="size-5" aria-hidden />
@@ -41,7 +41,7 @@ export function ToolShell({ tool, children }: { tool: Tool; children: ReactNode 
 
       {children}
 
-      <Button variant="ghost" asChild className="mt-2 w-fit">
+      <Button variant="ghost" asChild className="mt-2 w-fit print:hidden">
         <Link href="/">
           <ArrowLeft className="size-4" aria-hidden />
           All tools

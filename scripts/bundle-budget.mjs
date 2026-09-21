@@ -30,6 +30,7 @@ const BUDGETS = {
   "/gpa-calculator": 240,
   "/unit-converter": 240,
   "/citation-generator": 245,
+  "/timetable-maker": 245,
 };
 
 const server = spawn("npx", ["next", "start", "--port", String(PORT)], {

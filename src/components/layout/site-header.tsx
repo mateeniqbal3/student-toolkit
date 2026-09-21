@@ -8,7 +8,7 @@ import { siteConfig } from "@/lib/site-config";
 
 export function SiteHeader() {
   return (
-    <header className="bg-background/85 sticky top-0 z-50 border-b backdrop-blur-sm">
+    <header className="bg-background/85 sticky top-0 z-50 border-b backdrop-blur-sm print:hidden">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center gap-2 px-4">
         <Link
           href="/"
