@@ -1,6 +1,7 @@
 import Dexie, { type EntityTable, type Table } from "dexie";
 
 import type { CitationStyleId, CslItem } from "@/lib/citation/types";
+import type { SrsState } from "@/lib/flashcards/scheduler";
 import type { RateTable } from "@/lib/currency/rates";
 import type { Course } from "@/lib/gpa/calculate";
 import type { TimetableEntry, TimetableSettings } from "@/lib/timetable/types";
@@ -81,6 +82,30 @@ export interface TimetableRecord {
   entries: TimetableEntry[];
 }
 
+export interface DeckRecord {
+  id: number;
+  name: string;
+  createdAt: number;
+  updatedAt: number;
+  /** How many unseen cards a day's study may introduce. */
+  newPerDay: number;
+}
+
+/**
+ * One flashcard. Cards are their own table, not embedded in the deck: they
+ * are reviewed one at a time, dozens of times a session, and a deck can hold
+ * hundreds, so rewriting the whole deck on every answer would be waste.
+ */
+export interface CardRecord {
+  id: number;
+  deckId: number;
+  front: string;
+  back: string;
+  createdAt: number;
+  updatedAt: number;
+  srs: SrsState;
+}
+
 class StudentToolkitDatabase extends Dexie {
   semesters!: EntityTable<SemesterRecord, "id">;
   gradingScales!: EntityTable<GradingScaleRecord, "id">;
@@ -88,6 +113,8 @@ class StudentToolkitDatabase extends Dexie {
   citationProjects!: EntityTable<CitationProjectRecord, "id">;
   citations!: EntityTable<CitationRecord, "id">;
   timetables!: EntityTable<TimetableRecord, "id">;
+  decks!: EntityTable<DeckRecord, "id">;
+  cards!: EntityTable<CardRecord, "id">;
 
   constructor() {
     super("student-toolkit");
@@ -115,6 +142,13 @@ class StudentToolkitDatabase extends Dexie {
     // Version 4 — the timetable maker. Classes are embedded in the timetable.
     this.version(4).stores({
       timetables: "++id, name, updatedAt",
+    });
+
+    // Version 5 — flashcards. Cards are read a deck at a time and the study
+    // queue is worked out in memory, so the deck is the only index needed.
+    this.version(5).stores({
+      decks: "++id, name, updatedAt",
+      cards: "++id, deckId",
     });
   }
 }
