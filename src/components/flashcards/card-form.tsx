@@ -34,10 +34,13 @@ export function CardForm({
   async function submit(event?: FormEvent) {
     event?.preventDefault();
     if (!ready) return;
+    const submitted = { front, back };
     await onSubmit({ front: front.trim(), back: back.trim() });
     if (clearOnSubmit) {
-      setFront("");
-      setBack("");
+      // Only clear what was saved: a quick typist may already be writing the
+      // next card by the time the save lands.
+      setFront((current) => (current === submitted.front ? "" : current));
+      setBack((current) => (current === submitted.back ? "" : current));
       frontRef.current?.focus();
     }
   }
