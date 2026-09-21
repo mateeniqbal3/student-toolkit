@@ -45,7 +45,7 @@ than a rewrite.
 | `AI_DAILY_TOKEN_BUDGET`    | no       | server | Shared-key tokens per UTC day before BYOK-only kicks in.                                             |
 | `NEXT_PUBLIC_BYOK_ONLY`    | no       | client | `true` disables the shared key entirely.                                                             |
 
-None of these are needed for tools 1-8. The app builds and runs with an empty
+None of these are needed for any tool but the AI assistant. The app builds and runs with an empty
 environment.
 
 **The shared key must never appear in client code.** Only variables prefixed

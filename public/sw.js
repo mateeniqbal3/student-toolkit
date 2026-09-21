@@ -10,7 +10,7 @@
  *   - fonts and images   stale while revalidate
  *   - /api/*             never cached
  *
- * Route chunks reach the cache because the home page links to all nine tools
+ * Route chunks reach the cache because the home page links to every tool
  * and Next prefetches links as they enter the viewport; those prefetches pass
  * through the fetch handler below and land in the static cache.
  */

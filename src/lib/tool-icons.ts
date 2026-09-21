@@ -2,6 +2,7 @@ import {
   Calculator,
   CalendarDays,
   FileText,
+  Layers,
   NotebookPen,
   Percent,
   Quote,
@@ -16,7 +17,7 @@ import {
  *
  * The registry is imported by client components such as the mobile navigation.
  * Anything it references is therefore pulled into the browser bundle, and
- * bundling all nine icon components cost roughly 15KB gzipped on every route.
+ * bundling every icon component cost roughly 15KB gzipped on every route.
  * Icons are only ever drawn by server components, so keeping them in a
  * separate module keeps them out of the client entirely.
  */
@@ -26,6 +27,7 @@ export const TOOL_ICONS: Record<string, LucideIcon> = {
   "unit-converter": Ruler,
   "citation-generator": Quote,
   "timetable-maker": CalendarDays,
+  flashcards: Layers,
   "pomodoro-timer": Timer,
   notes: NotebookPen,
   "pdf-tools": FileText,

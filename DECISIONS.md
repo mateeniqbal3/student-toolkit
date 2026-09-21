@@ -4,6 +4,75 @@ Non-blocking choices made while building, with the reasoning. Newest first.
 If a decision here turns out to be wrong, change it and amend the entry rather
 than deleting it — the reasoning is the useful part.
 
+## Phase 6 — flashcards
+
+### Flashcards are a tenth tool, not part of the AI assistant
+
+The original plan had nine tools, with flashcards only as something the AI
+assistant would generate and export to Anki. Phase 6 was specified as a
+flashcard system, and a study tool that needs a language model, a network
+connection and a shared API quota to review a deck would break the rule the
+rest of the app is built on. So flashcards are their own tool: local,
+offline, no account. When the AI assistant lands, generating cards should
+mean adding them to a deck here, rather than a second flashcard system.
+
+Every mention of "nine tools" is now "ten", and "tools 1-8" — which
+numbered the offline tools and would now leave this one out — is reworded as
+"every tool except the AI assistant".
+
+### Scheduling is Anki's SM-2, written here rather than imported
+
+New cards go through 1- and 10-minute learning steps and graduate to one
+day; each successful review then multiplies the interval by the card's ease
+(2.5 to start, adjusted by Hard and Easy, never below 1.3); forgetting a card
+sends it through a 10-minute relearning step and lowers its ease. These are
+Anki's defaults, so a student moving between the two sees the same
+behaviour, and each answer button shows what it will do ("10m", "4d").
+
+FSRS, Anki's newer scheduler, is measurably better at predicting forgetting,
+but it needs a review history to fit its parameters, and its library would
+be the one piece of scheduling logic here that could not be explained in a
+paragraph or tested line by line. SM-2 is a hundred lines, pure and fully
+tested. A later move to FSRS can happen per card: the stored state already
+has what it needs to start from.
+
+Two small departures: intervals are not randomly fuzzed (so tests and the
+button labels are exact), and a day ends at local midnight rather than
+Anki's 4am.
+
+### Study order and the daily limit
+
+Due learning cards first, then reviews due today (most overdue first), then
+new cards in the order they were written, up to the deck's daily limit
+(twenty by default). When nothing else is left, a learning card due within
+twenty minutes is shown early rather than making the student wait. A card
+counts against the new-card limit on the day it is first studied.
+
+### Cards have their own table
+
+Unlike a timetable's classes, cards are written to one at a time, dozens of
+times a session, and a deck can hold hundreds. Embedding them in the deck
+would rewrite the whole deck on every answer. `cards` is indexed by deck
+only: the study queue is worked out in memory from a deck's cards, which is
+simpler than keeping a due-date index in step and fast enough at this size.
+
+### Import and export speak Anki's plain text
+
+Anki's "Notes in Plain Text" export is tab-separated with `#separator:` and
+`#html:` header lines, Quizlet exports tab- or comma-separated pairs, and
+spreadsheets write CSV. Import detects the separator (honouring Anki's
+header, then any tab, then whichever of semicolon or comma is commoner),
+parses quoted fields properly, turns Anki's HTML line breaks into line
+breaks and drops other markup. It shows how many cards it found and how many
+lines it will skip before anything is added. Export writes TSV with Anki's
+headers, or CSV, and round-trips through import unchanged.
+
+### Undo instead of confirm, again
+
+The last answer in a study session can be undone (button or Z), because a
+mis-tap on Again resets a card's progress. Deleting a card is undoable too.
+Deleting a whole deck and resetting its progress still ask first.
+
 ## Phase 5 — timetable maker
 
 ### Phones get a day view, not a squeezed week

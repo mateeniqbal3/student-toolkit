@@ -6,7 +6,7 @@
 export const siteConfig = {
   name: "Student Toolkit",
   shortName: "Toolkit",
-  tagline: "Nine study tools that work offline",
+  tagline: "Ten study tools that work offline",
   description:
     "GPA calculator, citation generator, timetable maker, PDF tools and more. Free forever, works offline, and your data never leaves your device.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://student-toolkit.vercel.app",

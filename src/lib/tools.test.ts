@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { getTool, TOOL_SLUGS, TOOLS } from "./tools";
 
 describe("tool registry", () => {
-  it("contains all nine tools", () => {
-    expect(TOOLS).toHaveLength(9);
+  it("contains all ten tools", () => {
+    expect(TOOLS).toHaveLength(10);
   });
 
   it("has unique slugs", () => {

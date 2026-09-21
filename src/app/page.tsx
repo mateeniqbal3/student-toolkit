@@ -35,7 +35,7 @@ export default function Home() {
         </p>
 
         <h1 className="font-display text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl md:text-6xl">
-          Nine study tools that <span className="text-primary">work offline</span>
+          Ten study tools that <span className="text-primary">work offline</span>
         </h1>
 
         <p className="text-muted-foreground max-w-xl text-lg text-pretty">

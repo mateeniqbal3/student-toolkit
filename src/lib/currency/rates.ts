@@ -1,7 +1,7 @@
 /**
  * Exchange rates.
  *
- * This is the one place in tools 1-8 that reaches the network, and it is worth
+ * This is one of the few places outside the AI assistant that reaches the network, and it is worth
  * being precise about what that means: the request carries no user data, no
  * cookie and no identifier. It asks a public endpoint for a table of numbers.
  * Nothing about what the student is converting leaves the device.

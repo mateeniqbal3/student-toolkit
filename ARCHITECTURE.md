@@ -26,7 +26,7 @@ is worth being precise about what each request carries:
 | AI study assistant | The prompt, to a language model     | Yes, necessarily — and the UI says so rather than burying it.                        |
 
 None of these requests carries a cookie, an account or any identifier, and the
-first two degrade to cached or manual data when they fail. Tools 1-8 still need
+first two degrade to cached or manual data when they fail. Every other tool still needs
 no account, no database and no server compute of our own; the AI assistant is
 quarantined behind one Route Handler and remains the only server code in the
 project.
@@ -56,7 +56,7 @@ unit-testable and keeps it out of any render path.
 
 ## The tool registry
 
-`src/lib/tools.ts` is the single source of truth for the nine tools. It drives
+`src/lib/tools.ts` is the single source of truth for the ten tools. It drives
 navigation, the home grid, the sitemap, and per-route metadata, so adding a tool
 is mostly a matter of adding an entry.
 
@@ -85,6 +85,8 @@ first paint, and they are tiny.
 | `timetables`       | `++id, name, updatedAt`                                             | grid settings and embedded classes (v4)    |
 | `notes`            | `++id, folderId, updatedAt, *tags, isPinned, isArchived, isTrashed` | markdown body and metadata                 |
 | `folders`          | `++id, parentId, order`                                             | note folder tree                           |
+| `decks`            | `++id, name, updatedAt`                                             | flashcard decks and their daily limit (v5) |
+| `cards`            | `++id, deckId`                                                      | front, back and scheduling state (v5)      |
 | `pomodoroSessions` | `++id, startedAt, taskId`                                           | completed focus sessions                   |
 | `tasks`            | `++id, isDone, updatedAt`                                           | pomodoro task list                         |
 | `citations`        | `++id, projectId, createdAt`                                        | CSL-JSON source records (landed, v3)       |
@@ -123,6 +125,6 @@ app stays fully useful when the shared quota is gone.
 ## Offline
 
 A hand-rolled service worker precaches the app shell and the static assets for
-tools 1-8. Navigation requests use stale-while-revalidate; `/api/ai` is never
+every offline tool. Navigation requests use stale-while-revalidate; `/api/ai` is never
 cached. Currency rates are cached in IndexedDB with a timestamp, and the UI shows
 "rates as of X" rather than failing when offline.

@@ -77,6 +77,16 @@ export const TOOLS: readonly Tool[] = [
     keywords: ["timetable", "class schedule", "conflict", "ics", "calendar"],
   },
   {
+    slug: "flashcards",
+    name: "Flashcards",
+    tagline: "Spaced repetition that schedules your revision for you",
+    description:
+      "Make flashcard decks and study them with spaced repetition, the method behind Anki: each card comes back just before you would forget it. Import from Anki, Quizlet or a spreadsheet, and export back to Anki.",
+    status: "available",
+    offline: true,
+    keywords: ["flashcards", "spaced repetition", "anki", "revision", "memorise", "quizlet"],
+  },
+  {
     slug: "pomodoro-timer",
     name: "Pomodoro Timer",
     tagline: "Focus sessions that stay accurate when your phone sleeps",
