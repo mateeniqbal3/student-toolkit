@@ -12,11 +12,18 @@ and can miss change events entirely. All commands run WSL-native.
 
 ## The constraint everything else follows from
 
-**Tools 1-8 must make zero network requests and use zero server storage.** The
-budget for this project is zero dollars, permanently. Local-first is what makes
-that possible: no server compute, no database, nothing to bill. It is also what
-makes the app work offline and what lets the UI honestly claim that student data
-never leaves the device.
+**Nothing a student types may leave the device, and tools 1-8 use zero server
+storage and zero server compute of ours.** The budget for this project is zero
+dollars, permanently. Local-first is what makes that possible: no server
+compute, no database, nothing to bill. It is also what makes the app work
+offline and what lets the UI honestly claim that student data never leaves the
+device.
+
+Two of tools 1-8 do fetch public reference data — exchange rates for the unit
+converter, citation metadata for a pasted DOI or ISBN — over anonymous requests
+that carry no user input beyond a public identifier, and both fall back to
+cached or manual entry when offline. That is the line: public data may come in,
+student data never goes out.
 
 Before adding any dependency or service, check that it is free with no credit
 card and stays free at moderate traffic. Prefer removing the need for a service

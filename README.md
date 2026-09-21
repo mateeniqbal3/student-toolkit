@@ -3,8 +3,8 @@
 Nine tools every university student needs, in one fast app that works without a
 connection. Free forever, no account, no ads, no tracking.
 
-> **Status:** in active development. The GPA and percentage calculators are
-> built; the remaining tools are landing phase by phase.
+> **Status:** in active development. The GPA calculator, percentage calculator
+> and unit converter are built; the remaining tools are landing phase by phase.
 
 ## Why it exists
 
