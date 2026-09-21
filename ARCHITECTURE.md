@@ -87,8 +87,8 @@ first paint, and they are tiny.
 | `folders`          | `++id, parentId, order`                                             | note folder tree                           |
 | `pomodoroSessions` | `++id, startedAt, taskId`                                           | completed focus sessions                   |
 | `tasks`            | `++id, isDone, updatedAt`                                           | pomodoro task list                         |
-| `citations`        | `++id, projectId, createdAt`                                        | CSL-JSON source records                    |
-| `citationProjects` | `++id, name`                                                        | bibliography groupings                     |
+| `citations`        | `++id, projectId, createdAt`                                        | CSL-JSON source records (landed, v3)       |
+| `citationProjects` | `++id, name`                                                        | bibliographies and their style (v3)        |
 | `aiConversations`  | `++id, updatedAt`                                                   | chat history, embedded messages            |
 | `currencyRates`    | `base`                                                              | cached FX table and fetch timestamp        |
 

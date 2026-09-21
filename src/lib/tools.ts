@@ -61,8 +61,8 @@ export const TOOLS: readonly Tool[] = [
     name: "Citation Generator",
     tagline: "APA, MLA, Chicago, IEEE and Harvard from a DOI or ISBN",
     description:
-      "Generate citations in APA 7, MLA 9, Chicago 17, IEEE and Harvard. Auto-fill from a DOI, ISBN, arXiv ID or PubMed ID, build a bibliography, and export to BibTeX, RIS or rich text that pastes cleanly into Word.",
-    status: "coming-soon",
+      "Generate citations in APA 7, MLA 9, Chicago 18, IEEE and Harvard. Auto-fill from a DOI, ISBN, arXiv ID or PubMed ID, build a bibliography, and export to BibTeX, RIS or rich text that pastes cleanly into Word.",
+    status: "available",
     offline: true,
     keywords: ["citation", "apa", "mla", "chicago", "ieee", "harvard", "bibliography", "doi"],
   },

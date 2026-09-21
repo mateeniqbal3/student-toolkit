@@ -3,8 +3,9 @@
 Nine tools every university student needs, in one fast app that works without a
 connection. Free forever, no account, no ads, no tracking.
 
-> **Status:** in active development. The GPA calculator, percentage calculator
-> and unit converter are built; the remaining tools are landing phase by phase.
+> **Status:** in active development. The GPA calculator, percentage calculator,
+> unit converter and citation generator are built; the remaining tools are
+> landing phase by phase.
 
 ## Why it exists
 
@@ -20,7 +21,7 @@ assistant runs entirely in your browser.
 | GPA and CGPA calculator | Semester GPA and cumulative CGPA across pluggable grading scales, including Pakistani HEC, 4.0, 5.0, 10-point, percentage, and a custom-scale editor. Solves for the GPA needed to hit a target CGPA. |
 | Percentage calculator   | Every mode students actually need, each showing the formula so it teaches rather than just answers.                                                                                                   |
 | Unit converter          | Sixteen categories including live currency rates, cached for offline use.                                                                                                                             |
-| Citation generator      | APA 7, MLA 9, Chicago 17, IEEE, and Harvard, auto-filled from a DOI, ISBN, arXiv, or PubMed ID.                                                                                                       |
+| Citation generator      | APA 7, MLA 9, Chicago 18, IEEE, and Harvard, auto-filled from a DOI, ISBN, arXiv, or PubMed ID.                                                                                                       |
 | Timetable maker         | Weekly grid with conflict detection, exportable to PNG, PDF, and `.ics` for Google Calendar.                                                                                                          |
 | Pomodoro timer          | Drift-free timing that stays accurate when your phone sleeps, with session history.                                                                                                                   |
 | Notes organizer         | Markdown with KaTeX maths, folders, tags, and instant full-text search.                                                                                                                               |
@@ -29,9 +30,14 @@ assistant runs entirely in your browser.
 
 ## Privacy
 
-Tools 1 through 8 make **no network requests at all**. Your grades, notes,
-timetables, and PDFs are stored in your own browser and never sent anywhere.
+**Nothing you type leaves your device.** Your grades, notes, timetables,
+citations and PDFs are stored in your own browser and never sent anywhere.
 There is no account, no database, and no analytics cookie.
+
+Two of tools 1 through 8 fetch public reference data: the unit converter
+downloads exchange rates, and the citation generator sends a DOI, ISBN, arXiv
+or PubMed ID you paste to a public catalogue to fill in the details. Neither
+request carries anything about you, and both tools keep working offline.
 
 The AI assistant is the one exception, because it has to reach a language model.
 It sends only the message you type. You can also supply your own free API key in
