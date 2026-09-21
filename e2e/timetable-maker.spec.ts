@@ -185,7 +185,7 @@ test.describe("Timetable maker", () => {
     await addClass(page, { title: "Option A", days: ["Monday"], start: "09:00", end: "10:00" });
 
     await page.getByRole("button", { name: "Duplicate this timetable" }).click();
-    await page.getByLabel("Timetable", { exact: true }).fill("Plan B");
+    await page.getByRole("textbox", { name: "Timetable" }).fill("Plan B");
     await page.getByRole("button", { name: "Done renaming" }).click();
     await expect(week(page).getByRole("button", { name: /^Option A/ })).toHaveCount(1);
 

@@ -197,7 +197,7 @@ test.describe("Citation generator", () => {
     await expect(references(page)).toContainText("References (1)");
 
     await page.getByRole("button", { name: "New bibliography" }).click();
-    await page.getByLabel("Bibliography", { exact: true }).fill("Thesis chapter 2");
+    await page.getByRole("textbox", { name: "Bibliography" }).fill("Thesis chapter 2");
     await page.getByRole("button", { name: "Done renaming" }).click();
 
     await expect(references(page)).toContainText("References (0)");
