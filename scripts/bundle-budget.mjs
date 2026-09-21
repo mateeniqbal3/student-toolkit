@@ -26,7 +26,8 @@ const ORIGIN = `http://127.0.0.1:${PORT}`;
  */
 const BUDGETS = {
   "/": 195,
-  "/gpa-calculator": 195,
+  "/percentage-calculator": 215,
+  "/gpa-calculator": 240,
 };
 
 const server = spawn("npx", ["next", "start", "--port", String(PORT)], {

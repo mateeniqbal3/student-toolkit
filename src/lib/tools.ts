@@ -32,7 +32,7 @@ export const TOOLS: readonly Tool[] = [
     tagline: "Semester GPA and cumulative CGPA on any grading scale",
     description:
       "Calculate semester GPA and cumulative CGPA across multiple grading scales including Pakistani HEC, 4.0, 5.0, 10-point and percentage. Solve for the GPA you need to hit a target CGPA, and export a transcript summary.",
-    status: "coming-soon",
+    status: "available",
     offline: true,
     keywords: ["gpa", "cgpa", "hec", "grade point average", "semester", "transcript"],
   },
@@ -42,7 +42,7 @@ export const TOOLS: readonly Tool[] = [
     tagline: "Every percentage problem, with the formula shown",
     description:
       "Work out percentages of a value, percentage change, increase and decrease, reverse percentages, and marks to percentage with weighted assignments, midterms and finals. Each result shows the formula used.",
-    status: "coming-soon",
+    status: "available",
     offline: true,
     keywords: ["percentage", "percent change", "marks", "weighted average"],
   },
