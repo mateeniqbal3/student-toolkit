@@ -30,27 +30,3 @@ export async function copyToClipboard(text: string, html?: string): Promise<bool
     return false;
   }
 }
-
-/** Saves a string as a file. Nothing is uploaded: the file is built in memory. */
-export function downloadFile(filename: string, content: string, type: string): void {
-  const url = URL.createObjectURL(new Blob([content], { type }));
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  // Revoked on the next task, after the browser has started the download.
-  window.setTimeout(() => URL.revokeObjectURL(url), 0);
-}
-
-/** "Thesis — Chapter 2" becomes "thesis-chapter-2". */
-export function fileSlug(name: string): string {
-  return (
-    name
-      .toLowerCase()
-      .normalize("NFKD")
-      .replace(/[^\p{L}\p{N}]+/gu, "-")
-      .replace(/^-+|-+$/g, "") || "bibliography"
-  );
-}

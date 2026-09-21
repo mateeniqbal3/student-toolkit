@@ -3,6 +3,7 @@
 import { Download, Pencil, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
 
+import { downloadFile, fileSlug } from "@/components/download";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -15,7 +16,6 @@ import {
 import { getStyle } from "@/lib/citation/styles";
 import type { CitationStyleId, CslItem } from "@/lib/citation/types";
 
-import { downloadFile, fileSlug } from "./clipboard";
 import { CopyButton } from "./copy-button";
 import type { FormattedState } from "./use-formatted-bibliography";
 
@@ -47,7 +47,11 @@ export function Bibliography({
     setExporting(format.format);
     try {
       const content = await exportSources(items, format.format);
-      downloadFile(`${fileSlug(projectName)}.${format.extension}`, content, format.type);
+      downloadFile(
+        `${fileSlug(projectName, "bibliography")}.${format.extension}`,
+        content,
+        format.type,
+      );
     } catch {
       // The exporter could not be loaded (offline before it was ever cached);
       // the button simply stops spinning and can be pressed again.

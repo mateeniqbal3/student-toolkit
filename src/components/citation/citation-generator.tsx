@@ -1,11 +1,10 @@
 "use client";
 
 import { useLiveQuery } from "dexie-react-hooks";
-import { Check, Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import { CollectionPicker } from "@/components/collection-picker";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -191,114 +190,31 @@ function ProjectBar({
   sourceCount: number;
   onSelect: (id: number) => void;
 }) {
-  const [renaming, setRenaming] = useState(false);
   const style = isStyleId(project.style) ? project.style : DEFAULT_STYLE;
-
-  async function create() {
-    const id = await addProject(`Bibliography ${projects.length + 1}`, style);
-    onSelect(id);
-    setRenaming(true);
-  }
-
-  async function remove() {
-    const detail = sourceCount === 1 ? "its 1 source" : `its ${sourceCount} sources`;
-    if (!window.confirm(`Delete “${project.name}” and ${detail}? This cannot be undone.`)) return;
-    onSelect(await deleteProject(project.id, FIRST_PROJECT_NAME));
-  }
 
   return (
     <section
       aria-label="Bibliography and style"
       className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,16rem)]"
     >
-      <div className="flex flex-col gap-1.5">
-        <Label
-          htmlFor={renaming ? "project-name" : "project-select"}
-          className="text-muted-foreground text-xs"
-        >
-          Bibliography
-        </Label>
-        <div className="flex gap-1">
-          {renaming ? (
-            <form
-              className="flex min-w-0 flex-1 gap-1"
-              onSubmit={(event) => {
-                event.preventDefault();
-                setRenaming(false);
-              }}
-            >
-              <Input
-                id="project-name"
-                className="h-9 min-w-0 flex-1"
-                defaultValue={project.name}
-                autoFocus
-                onFocus={(event) => event.target.select()}
-                onChange={(event) => {
-                  const name = event.target.value.trim();
-                  if (name) void renameProject(project.id, name);
-                }}
-                onBlur={() => setRenaming(false)}
-              />
-              <Button
-                type="submit"
-                variant="outline"
-                size="icon"
-                className="size-9 shrink-0"
-                aria-label="Done renaming"
-                // Keeps focus in the input, so its blur does not unmount this
-                // button before the click lands.
-                onMouseDown={(event) => event.preventDefault()}
-              >
-                <Check className="size-4" aria-hidden />
-              </Button>
-            </form>
-          ) : (
-            <>
-              <div className="min-w-0 flex-1">
-                <NativeSelect
-                  id="project-select"
-                  className="h-9"
-                  value={String(project.id)}
-                  onChange={(event) => onSelect(Number(event.target.value))}
-                >
-                  {projects.map((option) => (
-                    <option key={option.id} value={String(option.id)}>
-                      {option.name}
-                    </option>
-                  ))}
-                </NativeSelect>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-9 shrink-0"
-                aria-label="Rename this bibliography"
-                onClick={() => setRenaming(true)}
-              >
-                <Pencil className="size-4" aria-hidden />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-9 shrink-0"
-                aria-label="New bibliography"
-                onClick={() => void create()}
-              >
-                <Plus className="size-4" aria-hidden />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-9 shrink-0"
-                aria-label="Delete this bibliography"
-                onClick={() => void remove()}
-              >
-                <Trash2 className="size-4" aria-hidden />
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
+      <CollectionPicker
+        label="Bibliography"
+        noun="bibliography"
+        items={projects}
+        selectedId={project.id}
+        onSelect={onSelect}
+        onRename={(name) => void renameProject(project.id, name)}
+        onCreate={async () => {
+          onSelect(await addProject(`Bibliography ${projects.length + 1}`, style));
+        }}
+        onDelete={async () => {
+          const detail = sourceCount === 1 ? "its 1 source" : `its ${sourceCount} sources`;
+          if (!window.confirm(`Delete “${project.name}” and ${detail}? This cannot be undone.`)) {
+            return;
+          }
+          onSelect(await deleteProject(project.id, FIRST_PROJECT_NAME));
+        }}
+      />
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="citation-style" className="text-muted-foreground text-xs">
