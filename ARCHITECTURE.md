@@ -82,7 +82,7 @@ first paint, and they are tiny.
 | ------------------ | ------------------------------------------------------------------- | ------------------------------------------ |
 | `semesters`        | `++id, order`                                                       | semester name, term, embedded courses      |
 | `gradingScales`    | `++id, name`                                                        | custom letter to point to percent mappings |
-| `timetables`       | `++id, name, updatedAt`                                             | grid config and embedded entries           |
+| `timetables`       | `++id, name, updatedAt`                                             | grid settings and embedded classes (v4)    |
 | `notes`            | `++id, folderId, updatedAt, *tags, isPinned, isArchived, isTrashed` | markdown body and metadata                 |
 | `folders`          | `++id, parentId, order`                                             | note folder tree                           |
 | `pomodoroSessions` | `++id, startedAt, taskId`                                           | completed focus sessions                   |

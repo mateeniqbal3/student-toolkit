@@ -4,6 +4,87 @@ Non-blocking choices made while building, with the reasoning. Newest first.
 If a decision here turns out to be wrong, change it and amend the entry rather
 than deleting it — the reasoning is the useful part.
 
+## Phase 5 — timetable maker
+
+### Phones get a day view, not a squeezed week
+
+Seven columns at 360px are about 40px each, too narrow to read a course
+name, and scrolling the grid sideways breaks the no-horizontal-scroll rule.
+Below the small breakpoint the tool shows one day at a time: a row of day
+tabs with class counts, and each class as a full-width card. It opens on
+today. The week grid takes over from 640px, and always prints, whatever the
+screen.
+
+### "PDF" is the print stylesheet, not a PDF library
+
+The week prints on a named landscape A4 page with everything but the grid
+hidden, colours kept (`print-color-adjust: exact`) and dark mode swapped for
+light, because paper is white. Every browser's print dialog, including
+Android Chrome's, can save that as a PDF. Generating the PDF ourselves would
+mean pulling in pdf-lib and drawing the grid a third time, for a file no
+better than the browser's.
+
+The named page sits on the tool's root element rather than on the grid,
+because changing page names forces a page break and left a blank first page.
+
+### The PNG is drawn on a canvas, not screenshotted
+
+html2canvas is about 45KB and reproduces CSS approximately. A timetable is
+rectangles and text, which the canvas draws exactly for nothing. The export
+reads the live theme tokens, so it matches the screen in either theme, and it
+always draws the full week at 2x, even from a phone showing the day view.
+
+### Calendar export repeats weekly across a term, in floating time
+
+Each class becomes one event with `RRULE:FREQ=WEEKLY;UNTIL=` the last day of
+term, starting on its first occurrence on or after the first day. Times are
+floating (no time zone), which is what a class timetable means — 9:00 is 9:00
+wherever the calendar is — and avoids writing VTIMEZONE blocks, the usual
+source of broken hand-made .ics files. Lines are folded at 75 octets without
+splitting a multi-byte character, so Urdu course names survive. The term
+dates are the only extra input, and they are remembered per timetable.
+
+### Clashes are flagged, never blocked
+
+Students do have clashing classes: two sections they are choosing between, a
+lab that overruns into a lecture. The form warns while typing and names the
+class it clashes with, the page lists every clash with its overlapping
+window, and clashing blocks sit side by side in the grid with a red outline.
+Nothing refuses to save. Back-to-back classes (one ends at 10:00, the next
+starts at 10:00) are not a clash.
+
+### A new class can go on several days at once, then each day is its own
+
+A Monday–Wednesday lecture is one thing to type in, so the form takes several
+days. Once saved, each day is a separate entry, so moving Wednesday's room
+does not move Monday's.
+
+### The same course keeps its colour
+
+Typing a course name the timetable already has picks up that course's
+colour; a new course takes the least-used of the eight. Choosing a colour by
+hand stops the suggestion. The colours are new role tokens (`--course-1` to
+`--course-8`), defined for both themes, and used as a solid edge plus a light
+tint behind normal text, so text contrast does not depend on the hue.
+
+### Hidden days and hours never hide a class
+
+The grid shows the student's chosen days and hours, stretched to whole hours
+around any class outside them, and any day with a class stays visible even if
+it was switched off. Settings narrow the grid; they never make data vanish.
+
+### Duplicating is how a student compares options
+
+Registration often comes down to choosing between sections. Duplicating a
+timetable copies every class with fresh ids, so "Plan B" can be edited
+without touching the original.
+
+### The collection picker is shared
+
+Bibliographies and timetables need the same select, rename, new, delete
+control, so the Phase 4 version became `CollectionPicker`, with an optional
+duplicate action. The citation generator now uses it too.
+
 ## Phase 4 — citation generator
 
 ### Formatting is citeproc-js with the official CSL styles, not hand-written
