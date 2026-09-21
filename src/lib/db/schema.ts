@@ -1,5 +1,6 @@
-import Dexie, { type EntityTable } from "dexie";
+import Dexie, { type EntityTable, type Table } from "dexie";
 
+import type { RateTable } from "@/lib/currency/rates";
 import type { Course } from "@/lib/gpa/calculate";
 import type { GradeDefinition } from "@/lib/gpa/scales";
 
@@ -36,9 +37,17 @@ export interface GradingScaleRecord {
   grades: GradeDefinition[];
 }
 
+/**
+ * One cached rate table per base currency, keyed by the base itself rather
+ * than an auto-increment id: there is only ever one current table per base,
+ * and keying it this way makes a refresh a `put` instead of a find-then-update.
+ */
+export type CurrencyRateRecord = RateTable;
+
 class StudentToolkitDatabase extends Dexie {
   semesters!: EntityTable<SemesterRecord, "id">;
   gradingScales!: EntityTable<GradingScaleRecord, "id">;
+  currencyRates!: Table<CurrencyRateRecord, string>;
 
   constructor() {
     super("student-toolkit");
@@ -48,6 +57,11 @@ class StudentToolkitDatabase extends Dexie {
     this.version(1).stores({
       semesters: "++id, order",
       gradingScales: "++id, name",
+    });
+
+    // Version 2 — the currency side of the unit converter.
+    this.version(2).stores({
+      currencyRates: "base",
     });
   }
 }

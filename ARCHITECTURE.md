@@ -5,16 +5,31 @@
 
 ## The one rule
 
-**Tools 1-8 make zero network requests.** Every calculation, every file
-transformation, and every byte of user data stays in the browser. This is not a
-privacy garnish, it is the load-bearing decision:
+**No user data leaves the device.** Every calculation, every file
+transformation, and every byte a student types stays in the browser. This is
+not a privacy garnish, it is the load-bearing decision:
 
 - Hosting stays free forever, because there is no server compute and no database.
 - The app works offline, which matters on patchy mobile connectivity.
 - There is no user data to breach, because there is no user data on any server.
 
-The AI assistant (tool 9) is the single exception, and it is deliberately
-quarantined behind one Route Handler.
+Earlier drafts of this file said "tools 1-8 make zero network requests", which
+was the wrong way to state it: two of those tools have always been specified to
+fetch public reference data, and the rule that actually matters is about user
+data rather than about packets. Exactly three tools reach the network, and it
+is worth being precise about what each request carries:
+
+| Tool               | Request                             | Carries what the student typed?                                                      |
+| ------------------ | ----------------------------------- | ------------------------------------------------------------------------------------ |
+| Unit converter     | A public exchange-rate table        | No. It asks for a list of numbers and says nothing about the amount being converted. |
+| Citation generator | A DOI, ISBN, arXiv or PubMed lookup | Only the public document identifier that was pasted in.                              |
+| AI study assistant | The prompt, to a language model     | Yes, necessarily — and the UI says so rather than burying it.                        |
+
+None of these requests carries a cookie, an account or any identifier, and the
+first two degrade to cached or manual data when they fail. Tools 1-8 still need
+no account, no database and no server compute of our own; the AI assistant is
+quarantined behind one Route Handler and remains the only server code in the
+project.
 
 ## Layers
 

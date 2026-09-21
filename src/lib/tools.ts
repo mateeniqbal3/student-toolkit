@@ -52,7 +52,7 @@ export const TOOLS: readonly Tool[] = [
     tagline: "Sixteen categories, including live currency rates",
     description:
       "Convert length, mass, temperature, area, volume, speed, time, digital storage, data rate, pressure, energy, power, angle, fuel economy and currency. Exchange rates are cached so the converter keeps working offline.",
-    status: "coming-soon",
+    status: "available",
     offline: true,
     keywords: ["unit converter", "currency", "metric", "imperial", "conversion"],
   },

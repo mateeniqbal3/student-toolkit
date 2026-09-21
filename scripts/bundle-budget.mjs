@@ -28,6 +28,7 @@ const BUDGETS = {
   "/": 195,
   "/percentage-calculator": 215,
   "/gpa-calculator": 240,
+  "/unit-converter": 240,
 };
 
 const server = spawn("npx", ["next", "start", "--port", String(PORT)], {

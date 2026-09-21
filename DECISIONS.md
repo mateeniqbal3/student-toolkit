@@ -4,6 +4,87 @@ Non-blocking choices made while building, with the reasoning. Newest first.
 If a decision here turns out to be wrong, change it and amend the entry rather
 than deleting it — the reasoning is the useful part.
 
+## Phase 3 — unit converter
+
+### "Tools 1-8 make zero network requests" was the wrong rule, and is now corrected
+
+`ARCHITECTURE.md` and `CLAUDE.md` both stated it that way, and both were wrong
+on their own terms: the unit converter has always been specified to fetch live
+exchange rates, and the citation generator to look up a DOI or ISBN. The rule
+that actually matters — and the one the UI claims — is that nothing a student
+types leaves the device. Public reference data may come in; student data never
+goes out. Both files now say that, with a table of exactly which three tools
+reach the network and what each request carries.
+
+Worth stating plainly rather than quietly editing, because the old wording
+would have made the citation generator look like a violation of the
+architecture rather than an instance of it.
+
+### Rates come from three providers in order, and PKR decides the order
+
+`open.er-api.com` is tried first, `exchangerate.host` second, `frankfurter.app`
+third. All three are free, need no account and ask for no card.
+
+The obvious ordering would put the ECB-derived services first, since they are
+the more authoritative source. They are also the wrong choice here: they
+publish around thirty currencies and omit PKR, INR, BDT, NPR and LKR — which
+is most of the list this app's readers need. Coverage beats provenance when the
+alternative is a converter that cannot convert the user's own currency.
+
+Three providers rather than one because a project with no budget cannot pay for
+an SLA, and any single free endpoint may change its terms. Each attempt gets
+its own timeout so a hanging provider does not block the next.
+
+### A stale rate beats no rate
+
+Rates are cached in IndexedDB keyed by base currency, refetched when older than
+twelve hours, and used regardless of age when the network fails. The UI always
+prints "rates as of" and which provider answered.
+
+A student working out roughly what a 40-dollar textbook costs does not need
+this morning's mid-market fix; they need the order of magnitude. Failing closed
+would serve nobody, and failing silently would be worse. The one case with no
+honest answer — no network and no cache — says exactly that.
+
+Everything converts through a single USD-based table, so one cached table
+covers every pair rather than one per pair.
+
+### Conversions go through a base unit, in one of three shapes
+
+Per category, every unit states its relationship to one base, which keeps the
+definitions linear in the unit count rather than quadratic. Three shapes cover
+all sixteen categories: linear (`base = value × factor`), offset (temperature
+only), and reciprocal (fuel economy only, because less fuel per distance means
+more distance per unit of fuel). Factors are exact where an exact definition
+exists — an inch is 0.0254 m by agreement, not by measurement — so conversions
+round-trip, and a test asserts that they do.
+
+### The converter answers the whole category, not just the pair
+
+Typing a number shows every unit in the category at once, underneath the
+selected pair. It answers the question the student had and the one they were
+about to ask, and it costs nothing but layout.
+
+### Absolute zero is a real answer, not a number
+
+A converter that cheerfully reports −400°C as 33 K is lying. Temperature input
+below absolute zero produces a refusal rather than a conversion. No other
+category has a floor, so the check is scoped to temperature rather than
+generalised into a validation layer nothing else needs.
+
+### Marla, kanal and tola are in the tables on purpose
+
+Land across Pakistan and north India is quoted in marla and kanal, and gold in
+tola. These are not curiosities for this audience — they are the units a
+student is most likely to need converting and least likely to find in a generic
+converter.
+
+### Switching category remounts the panel
+
+That is what resets the unit pair to the new category's sensible default,
+instead of leaving "kilometres" selected on a screen that is now about
+pressure. A `key` on the panel is the whole implementation.
+
 ## Phase 2 — GPA and percentage calculators
 
 ### Tool routes carry their own bundle budget
