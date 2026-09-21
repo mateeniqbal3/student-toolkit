@@ -42,6 +42,7 @@ npm run build         # next build
 npm run budget        # measure gzipped JS per route against the budget
 npm run e2e           # playwright (needs a build first)
 npm run icons         # regenerate the PWA icons from scripts/generate-icons.mjs
+npm run styles        # regenerate citation style modules after replacing a .csl file
 ```
 
 CI runs typecheck, lint, format:check, test, build, then the Playwright smoke

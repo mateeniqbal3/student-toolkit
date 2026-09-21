@@ -8,3 +8,4 @@ test-results/
 package-lock.json
 next-env.d.ts
 public/
+src/lib/citation/styles/generated/
