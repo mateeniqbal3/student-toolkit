@@ -11,7 +11,7 @@ const LINKS = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-16 border-t">
+    <footer className="mt-16 border-t print:hidden">
       <div className="text-muted-foreground mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
         <p>
           <span className="text-foreground font-medium">Free forever.</span> No account, no ads, no

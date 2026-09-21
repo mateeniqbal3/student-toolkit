@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { ToolPlaceholder } from "@/components/tool-placeholder";
+import { TimetableMaker } from "@/components/timetable/timetable-maker";
+import { ToolShell } from "@/components/tool-shell";
 import { toolMetadata } from "@/lib/tool-metadata";
 import { getTool } from "@/lib/tools";
 
@@ -12,5 +13,9 @@ export default function Page() {
   const tool = getTool(SLUG);
   if (!tool) notFound();
 
-  return <ToolPlaceholder tool={tool} />;
+  return (
+    <ToolShell tool={tool}>
+      <TimetableMaker />
+    </ToolShell>
+  );
 }
