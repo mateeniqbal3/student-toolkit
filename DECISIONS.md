@@ -4,6 +4,81 @@ Non-blocking choices made while building, with the reasoning. Newest first.
 If a decision here turns out to be wrong, change it and amend the entry rather
 than deleting it — the reasoning is the useful part.
 
+## Phase 2 — GPA and percentage calculators
+
+### Tool routes carry their own bundle budget
+
+The home route holds at 191KB because it ships almost no application code.
+A tool route cannot: `/gpa-calculator` measures 230.9KB, and roughly 35KB of
+the difference is Dexie and its React binding.
+
+That is the price of the local-first decision rather than a regression. There
+is no server to hold a transcript, so the transcript lives in IndexedDB, and
+a hand-rolled IndexedDB wrapper would cost most of the same bytes with worse
+migration handling. The budgets are therefore per route and set from real
+measurements: 195KB for `/`, 215KB for `/percentage-calculator`, 240KB for
+`/gpa-calculator`. Each one has a little headroom and nothing more, so a
+careless import still fails the build.
+
+Note that `/percentage-calculator` comes in at 196.3KB with no persistence at
+all — about 5KB of application code over the framework floor. Tools that do
+not need to remember anything should stay in that range.
+
+### Grade pickers are native `<select>` elements
+
+A transcript page can hold thirty of them. Radix's select is nicer looking but
+costs bundle on exactly the page that can least afford it, and on Android the
+native control opens the system wheel picker, which is faster to use one-handed
+than any listbox rebuilt in JavaScript. `NativeSelect` is styled to match
+`Input`, so the difference is invisible until you tap it, at which point the
+platform control is the better one.
+
+The custom scale editor is the exception: it uses the Radix dialog, and it is
+behind a dynamic import for the same reason the mobile navigation sheet is —
+most students pick a built-in scale and never open it.
+
+### Transcript text fields are uncontrolled
+
+Every keystroke in the transcript writes to IndexedDB, and the value comes back
+through `useLiveQuery` asynchronously. Binding `value` to that round trip means
+a fast typist can outrun the store and lose characters. The name and credit
+fields therefore use `defaultValue` and write on change, so React never fights
+the keyboard. Grade selects stay controlled, because a select cannot drop
+input the way a text field can.
+
+### Half-filled rows are skipped, not scored as zero
+
+A student types a course name before they have a grade for it. Counting that
+row as a zero would show a failing GPA mid-typing, so `calculateGpa` skips any
+row without both a resolvable grade and positive credits, and reports how many
+it skipped. An `F` is a grade and still counts; only a blank is a blank.
+
+The same reasoning drives the weighted-marks mode of the percentage
+calculator: it scores against the weight actually entered rather than against
+100, so a student who has sat the midterm but not the final sees how they are
+doing rather than a number depressed by a paper that does not exist yet.
+
+### CGPA is credit-weighted across all courses, never an average of averages
+
+Averaging the semester GPAs gives a different — and wrong — answer whenever
+semesters carry different credit loads. It is also the mistake students most
+often make by hand, so the unit test for it states both numbers explicitly.
+
+### The last semester is emptied rather than deleted
+
+Deleting it would leave the page with nothing to render and an empty state
+whose only purpose is to ask the student to press "add semester". For the same
+reason a first visit seeds one semester with four blank rows: a calculator
+with no rows is not a calculator.
+
+### Preferences read `localStorage` through `useSyncExternalStore`
+
+Storage is an external store, and the server has none. The hook's server
+snapshot is the fallback value, which lets React hydrate against matching HTML
+and then re-render once with the stored value. Syncing in an effect either
+flashes or trips the `react-hooks/set-state-in-effect` rule, both of which are
+the lint rule correctly describing a real problem.
+
 ## Phase 1 — design system and app shell
 
 ### The 150KB initial-JS budget is not reachable on this stack
