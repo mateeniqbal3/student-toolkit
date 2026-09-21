@@ -79,6 +79,7 @@ test.describe("Citation generator", () => {
     await mockLookups(page);
     await page.goto("/citation-generator");
     await findAndAdd(page, "10.1038/nphys1170");
+    await expect(references(page)).toContainText("References (1)");
 
     await page.getByLabel("Find a source").fill("10.1038/nphys1170");
     await page.getByRole("button", { name: "Find", exact: true }).click();
