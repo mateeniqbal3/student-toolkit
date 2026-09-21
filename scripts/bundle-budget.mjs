@@ -31,6 +31,7 @@ const BUDGETS = {
   "/unit-converter": 240,
   "/citation-generator": 245,
   "/timetable-maker": 245,
+  "/flashcards": 240,
 };
 
 const server = spawn("npx", ["next", "start", "--port", String(PORT)], {
