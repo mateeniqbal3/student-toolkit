@@ -4,6 +4,111 @@ Non-blocking choices made while building, with the reasoning. Newest first.
 If a decision here turns out to be wrong, change it and amend the entry rather
 than deleting it — the reasoning is the useful part.
 
+## Phase 4 — citation generator
+
+### Formatting is citeproc-js with the official CSL styles, not hand-written
+
+The five styles run on citeproc-js (through citation-js), the processor Zotero
+and Mendeley use, fed the unmodified style files from the Citation Style
+Language repository. Hand-writing five formatters would mean re-deriving
+hundreds of pages of rules and getting the edge cases (et al. thresholds,
+2020a/2020b, missing dates, editors) subtly wrong. Running the reference
+implementation means the output matches what a supervisor's Zotero produces.
+
+The cost is size: citeproc is a 127KB gzipped chunk. It is dynamically
+imported, never in the initial bundle, and starts downloading as soon as the
+page mounts so the first citation appears without a visible wait. The route
+itself measures 238.9KB, budgeted at 245KB.
+
+### Style files become generated modules, one chunk each
+
+The `.csl` files stay in the repository exactly as published so a style can
+be updated by dropping in a newer copy. `npm run styles` minifies each into a
+TypeScript module exporting a string; the bundler splits each into its own
+chunk (APA 6.6KB, Chicago 10KB gzipped). That needs no raw-file loader or
+extra dependency, and a unit test fails if a module drifts from its source.
+The `<info>` block is kept because CC BY-SA requires the attribution to travel
+with the file. After the style in use is ready, the other four are fetched in
+the background so switching style on a later offline visit works.
+
+### Chicago is the 18th edition, not the 17th the brief named
+
+The current official Chicago author-date style implements the 18th edition
+(2024). Shipping a superseded edition on purpose would be doing students a
+disservice, so the registry copy now says Chicago 18. Harvard is Cite Them
+Right 12th edition, the variant most UK and Pakistani universities teach.
+
+### Lookups go only to services a browser may call directly
+
+Every service was probed for CORS before being chosen, because there is no
+server of ours to proxy through:
+
+| Identifier | Primary                        | Fallback             |
+| ---------- | ------------------------------ | -------------------- |
+| DOI        | doi.org content negotiation    | Crossref REST API    |
+| arXiv      | doi.org, via the DataCite DOI  | DataCite API         |
+| ISBN       | Open Library edition + search  | Google Books         |
+| PubMed     | NCBI E-utilities, then its DOI | the E-utilities data |
+
+arXiv's own API and NCBI's citation exporter both lack CORS headers, which is
+why arXiv goes through its DataCite DOI and PubMed through E-utilities. Open
+Library's `/api/books` endpoint now returns 404, so the edition record is used
+for publisher, year and edition, and the search index for author names, which
+edition records usually omit. Google Books' anonymous quota is shared and often
+exhausted, so it is the fallback rather than the primary. A PubMed record with
+a DOI is re-fetched through doi.org, because PubMed abbreviates given names to
+initials and the publisher's record has them in full.
+
+The lookup distinguishes "nothing is registered under that" from "no service
+answered". The first means a typo; the second usually means offline. Telling a
+student their correct DOI does not exist would be worse than no answer.
+
+### The student sees the formatted source before it is added
+
+Publisher metadata is sometimes wrong — a title in capitals, a missing issue —
+and the moment to catch that is before it is in the reference list. A lookup
+shows a preview in the chosen style with "Add" and "Edit first", which is one
+extra glance and not an extra step.
+
+### Sources are their own table; projects hold a style
+
+Unlike a semester's courses, sources are edited one at a time and a thesis
+bibliography can reach hundreds, so `citations` is a table indexed by
+`projectId` rather than an array embedded in the project. Each project stores
+its own style, because each assignment has its own. The last project is
+emptied rather than deleted, the same rule as the GPA calculator's last
+semester.
+
+### In-text citations come from one processor pass over the whole list
+
+citation-js's `citation` output registers only the source being cited, which
+drops the "a" and "b" from two works by one author in one year and numbers
+every IEEE citation "[1]". The generator instead asks citeproc for every
+source's citation in one `rebuildProcessorState` call, in reference-list
+order, which gets both right and is linear rather than quadratic.
+
+### Formatted HTML is sanitised even though citeproc escapes it
+
+Titles from publishers carry markup (JATS italics, `<sub>` in chemical
+formulae), and the formatted HTML is both rendered on the page and put on the
+clipboard for Word. The sanitiser keeps only italic, bold, sub, sup and
+small-caps spans. It is a second line of defence, and it is tested with
+script and handler payloads.
+
+### Duplicates are caught by identifier first, then title and year
+
+Pasting the same DOI twice is the common way a list gains a duplicate, and
+the copy then renders as a different source (2020a and 2020b of one paper).
+The finder warns and offers "Add it again" rather than refusing, because two
+editions of a book can legitimately share a title.
+
+### Deletes are undoable rather than confirmed
+
+A confirmation dialog on every delete trains people to tap through it. The
+deleted record is held for ten seconds with an Undo button, and restored with
+its original id and position. Deleting a whole bibliography, which cannot be
+undone, still asks first.
+
 ## Phase 3 — unit converter
 
 ### "Tools 1-8 make zero network requests" was the wrong rule, and is now corrected

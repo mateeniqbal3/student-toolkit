@@ -39,7 +39,9 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong>Citation lookups.</strong> If you paste a DOI, ISBN, arXiv or PubMed ID, that
-            identifier is sent to the relevant public catalogue to fetch the publication details.
+            identifier is sent to the relevant public catalogue (doi.org, Crossref, DataCite, Open
+            Library, Google Books or PubMed) to fetch the publication details. Your saved sources
+            and the rest of your bibliography are never sent.
           </li>
         </ul>
         <p>
