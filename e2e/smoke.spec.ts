@@ -6,6 +6,7 @@ const TOOL_SLUGS = [
   "unit-converter",
   "citation-generator",
   "timetable-maker",
+  "flashcards",
   "pomodoro-timer",
   "notes",
   "pdf-tools",

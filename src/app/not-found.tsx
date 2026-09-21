@@ -14,7 +14,7 @@ export default function NotFound() {
         That page does not exist. It may have moved, or the link may be wrong.
       </p>
       <Button asChild>
-        <Link href="/">See all nine tools</Link>
+        <Link href="/">See all ten tools</Link>
       </Button>
     </main>
   );

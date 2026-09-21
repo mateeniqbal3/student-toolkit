@@ -1,6 +1,6 @@
 # Student Toolkit
 
-Nine tools every university student needs, in one fast app that works without a
+Ten tools every university student needs, in one fast app that works without a
 connection. Free forever, no account, no ads, no tracking.
 
 > **Status:** in active development. The GPA calculator, percentage calculator,
@@ -23,6 +23,7 @@ assistant runs entirely in your browser.
 | Unit converter          | Sixteen categories including live currency rates, cached for offline use.                                                                                                                             |
 | Citation generator      | APA 7, MLA 9, Chicago 18, IEEE, and Harvard, auto-filled from a DOI, ISBN, arXiv, or PubMed ID.                                                                                                       |
 | Timetable maker         | Weekly grid with conflict detection, exportable to PNG, PDF, and `.ics` for Google Calendar.                                                                                                          |
+| Flashcards              | Spaced-repetition decks that bring each card back just before you would forget it, with import from and export to Anki.                                                                               |
 | Pomodoro timer          | Drift-free timing that stays accurate when your phone sleeps, with session history.                                                                                                                   |
 | Notes organizer         | Markdown with KaTeX maths, folders, tags, and instant full-text search.                                                                                                                               |
 | PDF tools               | Merge, split, reorder, rotate, watermark, compress, convert, and extract, all in your browser.                                                                                                        |
@@ -34,7 +35,7 @@ assistant runs entirely in your browser.
 citations and PDFs are stored in your own browser and never sent anywhere.
 There is no account, no database, and no analytics cookie.
 
-Two of tools 1 through 8 fetch public reference data: the unit converter
+Two of the offline tools fetch public reference data: the unit converter
 downloads exchange rates, and the citation generator sends a DOI, ISBN, arXiv
 or PubMed ID you paste to a public catalogue to fill in the details. Neither
 request carries anything about you, and both tools keep working offline.
@@ -54,7 +55,7 @@ npm install
 npm run dev
 ```
 
-No API keys are needed to run or develop tools 1 through 8. Copy `.env.example`
+No API keys are needed to run or develop any tool but the AI assistant. Copy `.env.example`
 to `.env.local` only if you want the AI assistant to use a shared key; see
 `DEPLOY.md` for what each variable does.
 

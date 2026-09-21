@@ -15,12 +15,12 @@ export default function AboutPage() {
 
       <div className="mt-6 flex flex-col gap-4 text-pretty">
         <p>
-          {siteConfig.name} is a free collection of nine tools for university students, built to
-          work on a cheap phone with a bad connection.
+          {siteConfig.name} is a free collection of ten tools for university students, built to work
+          on a cheap phone with a bad connection.
         </p>
         <p>
           Most student calculators are single-purpose pages covered in ads that need a good
-          connection and quietly upload whatever you type into them. This is one app instead of nine
+          connection and quietly upload whatever you type into them. This is one app instead of ten
           tabs, and everything except the AI assistant runs entirely inside your browser.
         </p>
 

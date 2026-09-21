@@ -12,7 +12,7 @@ npm install
 npm run dev
 ```
 
-You do not need any API keys to work on tools 1–8; they run entirely in the
+You do not need any API keys to work on any tool but the AI assistant; they run entirely in the
 browser. Only the AI assistant needs a key, and it supports bring-your-own-key,
 so you can develop against your own free Gemini key without touching `.env`.
 
@@ -39,7 +39,7 @@ take care of itself.
 - **No new runtime dependency** without a note in `DECISIONS.md` explaining why
   the bundle cost is worth it. The performance budget is real: students on slow
   3G are the target audience.
-- **No server calls from tools 1–8.** This is the architectural constraint the
+- **No server calls outside the AI assistant.** This is the architectural constraint the
   whole project rests on. See `ARCHITECTURE.md`.
 
 ## Reporting a bug
