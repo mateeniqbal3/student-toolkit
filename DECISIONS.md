@@ -4,6 +4,96 @@ Non-blocking choices made while building, with the reasoning. Newest first.
 If a decision here turns out to be wrong, change it and amend the entry rather
 than deleting it — the reasoning is the useful part.
 
+## Phase 7 — pomodoro timer
+
+### Phase 7 is the pomodoro timer
+
+Phase 7 arrived without a written spec. Every phase so far has built the
+next tool in registry order, and the next one marked coming soon was the
+pomodoro timer, whose tables were already planned in `ARCHITECTURE.md`. So
+that is what this phase built. A Phase 0 note calls the full browser matrix
+"a Phase 7 task"; that note predates the change from nine tools to ten, and
+the browser matrix stays a pre-launch task.
+
+### Time comes from timestamps, never from counting ticks
+
+A running phase stores when it ends, and the time left is always
+`endsAt - now`. The interval only repaints the display. Browsers throttle
+timers in background tabs and phones suspend them outright, so an app that
+counts ticks drifts by minutes. This one is right the moment it is looked at
+again. When several phases ended while the page slept (with auto-start on),
+`settle` replays them from their scheduled end times, so an hour away lands
+exactly where an hour watching would have.
+
+A started phase also stores its own length. Changing the settings affects
+the next phase and never rewrites the one running.
+
+### The running timer lives in localStorage
+
+The timer state and settings are small and read before first paint, which is
+what `ARCHITECTURE.md` reserves localStorage for. Keeping the running timer
+there rather than in React state means a reload, a closed tab or a phone that
+killed the browser picks up where it was, and a second tab shows the same
+timer. Everything read back is validated, and anything malformed falls back
+to a fresh timer.
+
+### The session is saved before the timer moves on
+
+When a phase ends, the session is written to IndexedDB first and only then
+does the stored timer state advance. The e2e suite caught the other order
+losing sessions: the page closed after the state moved on but before the
+write landed. In this order a page that closes in between leaves the timer
+still "running". The next visit settles the same phase again, and the write
+is skipped because a session with that start time already exists. The same
+check stops two open tabs from recording one session twice.
+
+### What gets recorded
+
+Only focus is recorded, not breaks: the history answers "how much did I
+study". A session that runs its full length counts as a pomodoro. Focus cut
+short by skip, reset or switching phase still counts towards focus minutes
+if it lasted at least a minute, but not as a pomodoro. Under a minute is
+treated as a mis-tap. A session belongs to the day it started, and weeks
+start on Monday (ISO 8601).
+
+A task's pomodoro count is stored on the task and incremented in the same
+transaction as the session, rather than counted from history each time.
+Clearing the history therefore leaves the task counts alone. That fits what
+they are: a record against the estimate.
+
+### Tasks are indexed by creation time, not by "done"
+
+The planned `isDone` index would never have worked: IndexedDB cannot index
+booleans, so no record would ever have matched it. Tasks store `doneAt` (a
+time or null) and are filtered in memory. A task list is a few dozen rows.
+
+### Alerts: a synthesised chime, and notifications only when out of sight
+
+The chime is three notes from Web Audio, so there is no sound file to
+download or cache. The audio context is unlocked by the Start button,
+because browsers block audio that no gesture started. System notifications
+are opt-in, requested only when the switch is turned on, and shown only when
+the page is hidden. They go through the service worker when one is
+registered, because Chrome on Android refuses `new Notification()`. A tap
+on one focuses the timer's tab or reopens it.
+
+A background tab's timers can be throttled to about once a minute, so a
+notification can arrive up to a minute late. The time shown is never wrong.
+Getting the notification exactly on time would need a push server, which
+this project will not run.
+
+### The weekly chart is plain elements, not a chart library
+
+Seven bars need no library, and the route was already close to its budget.
+It is one series, so one colour (`--primary`, with today at full strength).
+The scale has two recessive gridlines at round values. Each bar shows its
+value on hover, and a visually hidden table gives screen readers the exact
+numbers. The route measures 237.8KB and its budget is 245KB, the same as the
+other tools that store data.
+
+`useNow` moved from the flashcards folder to `src/hooks`, since both tools
+now use it.
+
 ## Phase 6 — flashcards
 
 ### Flashcards are a tenth tool, not part of the AI assistant

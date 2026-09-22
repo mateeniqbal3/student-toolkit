@@ -4,8 +4,8 @@ Ten tools every university student needs, in one fast app that works without a
 connection. Free forever, no account, no ads, no tracking.
 
 > **Status:** in active development. The GPA calculator, percentage calculator,
-> unit converter, citation generator and timetable maker are built; the
-> remaining tools are landing phase by phase.
+> unit converter, citation generator, timetable maker, flashcards and pomodoro
+> timer are built; the remaining tools are landing phase by phase.
 
 ## Why it exists
 
