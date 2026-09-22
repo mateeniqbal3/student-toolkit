@@ -102,7 +102,7 @@ export const TOOLS: readonly Tool[] = [
     tagline: "Markdown notes with maths, tags and instant search",
     description:
       "Write notes in Markdown with live preview, code blocks and KaTeX maths. Organise with folders and tags, search everything instantly, and export a single note or a full backup you can import again.",
-    status: "coming-soon",
+    status: "available",
     offline: true,
     keywords: ["notes", "markdown", "katex", "study notes", "search"],
   },

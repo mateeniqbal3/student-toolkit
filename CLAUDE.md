@@ -55,8 +55,9 @@ suite. All of it must pass before merge.
 - **Pure logic goes in `src/lib/<domain>/` and imports no React.** Grading
   scales, unit conversion tables, citation formatting, percentage maths. This is
   where the unit tests point, and it keeps computation out of render paths.
-- **Heavy libraries are dynamically imported.** `pdf-lib`, `pdf.js`, and
-  `citation-js` must never land in the initial bundle. Run `npm run budget`
+- **Heavy libraries are dynamically imported.** `pdf-lib`, `pdf.js`,
+  `citation-js`, `markdown-it`, `katex` and `minisearch` must never land in
+  the initial bundle. Run `npm run budget`
   after a build: it measures the real gzipped JavaScript per route and fails
   over the limit. CI runs it too. Note that anything imported by a client
   component reaches the browser even if only a server component renders it,

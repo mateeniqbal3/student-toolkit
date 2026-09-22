@@ -78,21 +78,21 @@ first paint, and they are tiny.
 
 **IndexedDB via Dexie** holds everything else. Planned schema:
 
-| Table              | Indexes                                                             | Holds                                      |
-| ------------------ | ------------------------------------------------------------------- | ------------------------------------------ |
-| `semesters`        | `++id, order`                                                       | semester name, term, embedded courses      |
-| `gradingScales`    | `++id, name`                                                        | custom letter to point to percent mappings |
-| `timetables`       | `++id, name, updatedAt`                                             | grid settings and embedded classes (v4)    |
-| `notes`            | `++id, folderId, updatedAt, *tags, isPinned, isArchived, isTrashed` | markdown body and metadata                 |
-| `folders`          | `++id, parentId, order`                                             | note folder tree                           |
-| `decks`            | `++id, name, updatedAt`                                             | flashcard decks and their daily limit (v5) |
-| `cards`            | `++id, deckId`                                                      | front, back and scheduling state (v5)      |
-| `pomodoroSessions` | `++id, startedAt`                                                   | focus sessions, full or cut short (v6)     |
-| `tasks`            | `++id, createdAt`                                                   | pomodoro task list (v6)                    |
-| `citations`        | `++id, projectId, createdAt`                                        | CSL-JSON source records (landed, v3)       |
-| `citationProjects` | `++id, name`                                                        | bibliographies and their style (v3)        |
-| `aiConversations`  | `++id, updatedAt`                                                   | chat history, embedded messages            |
-| `currencyRates`    | `base`                                                              | cached FX table and fetch timestamp        |
+| Table              | Indexes                            | Holds                                      |
+| ------------------ | ---------------------------------- | ------------------------------------------ |
+| `semesters`        | `++id, order`                      | semester name, term, embedded courses      |
+| `gradingScales`    | `++id, name`                       | custom letter to point to percent mappings |
+| `timetables`       | `++id, name, updatedAt`            | grid settings and embedded classes (v4)    |
+| `notes`            | `++id, folderId, updatedAt, *tags` | markdown body, pin and trash state (v7)    |
+| `noteFolders`      | `++id, parentId`                   | note folder tree (v7)                      |
+| `decks`            | `++id, name, updatedAt`            | flashcard decks and their daily limit (v5) |
+| `cards`            | `++id, deckId`                     | front, back and scheduling state (v5)      |
+| `pomodoroSessions` | `++id, startedAt`                  | focus sessions, full or cut short (v6)     |
+| `tasks`            | `++id, createdAt`                  | pomodoro task list (v6)                    |
+| `citations`        | `++id, projectId, createdAt`       | CSL-JSON source records (landed, v3)       |
+| `citationProjects` | `++id, name`                       | bibliographies and their style (v3)        |
+| `aiConversations`  | `++id, updatedAt`                  | chat history, embedded messages            |
+| `currencyRates`    | `base`                             | cached FX table and fetch timestamp        |
 
 Design notes:
 

@@ -4,6 +4,98 @@ Non-blocking choices made while building, with the reasoning. Newest first.
 If a decision here turns out to be wrong, change it and amend the entry rather
 than deleting it — the reasoning is the useful part.
 
+## Phase 8 — notes organizer
+
+### Phase 8 is the notes organizer
+
+Like Phase 7, this phase came without a written spec and follows registry
+order. The registry entry was the brief: Markdown with live preview, code
+blocks, KaTeX maths, folders, tags, instant search, and export of a single
+note or a full backup that imports again.
+
+### markdown-it, KaTeX and MiniSearch, all loaded late
+
+Three new dependencies, all MIT and needing no account or service:
+markdown-it, KaTeX (through Microsoft's `@vscode/markdown-it-katex` plugin)
+and MiniSearch. KaTeX is pinned to 0.16 because the plugin requires it, and
+two copies would double the heaviest part.
+
+None of them is in the page's initial download. The renderer (markdown-it,
+KaTeX and KaTeX's stylesheet and fonts) loads the first time a preview is
+shown. MiniSearch loads the first time someone searches, with a plain
+substring match covering the few milliseconds before it arrives. Both are
+also fetched once the page is idle, which puts them in the service worker's
+cache so they work offline from the second visit. Loading MiniSearch late
+took the route from 241.7KB to 236.4KB, against a 245KB budget.
+
+KaTeX's fonts load only when maths is rendered. A student whose first ever
+maths preview happens offline sees it in fallback fonts until they next
+connect. That is readable, and it is better than every visitor downloading
+fonts they may never need.
+
+### The preview is safe by configuration, not by sanitising
+
+Rendered notes go into the page as HTML, so the renderer is set up so that
+nothing a note contains can run. markdown-it has raw HTML off, so `<script>`
+shows as text. It refuses `javascript:` links. KaTeX runs with `trust` off,
+so `\href` and `\includegraphics` produce an error mark, not a link or
+image. Unit tests and an e2e test pin each of these. A sanitiser such as
+DOMPurify on top would add weight to guard against output these settings
+already cannot produce.
+
+### Remote images are links, not images
+
+`![diagram](https://…)` renders as a link. An `<img>` would make the browser
+fetch from that server every time the note was opened, telling it when and
+from which IP. Notes that never leave the device should not report being
+read. Embedding local images would mean storing blobs in IndexedDB. That is
+worth doing only if students ask for it.
+
+### Trash instead of delete; no archive
+
+Deleting a note moves it to a trash it can be restored from. Only "Delete
+forever" and "Empty trash" ask for confirmation, since only they cannot be
+undone. The trash is never emptied automatically: silently deleting a
+student's work on a timer is the wrong default. The planned archive was
+left out because a folder does the same job.
+
+As with the pomodoro tasks, the planned boolean indexes (`isPinned`,
+`isTrashed`) are gone, because IndexedDB cannot index booleans. The trash is
+a `trashedAt` time, and filtering happens in memory over every note, which is
+also what search needs. The table is `noteFolders` rather than `folders`,
+because other tools may want folders too.
+
+### Autosave, and the editor ignores its own echo
+
+Typing saves 400ms after it stops. It also saves at once when the note is
+closed, the tab is hidden or the page unloads, which covers a phone
+switching apps mid-sentence. While a note is open, its text is held in the
+editor and not re-read from the live query: each save echoing back would
+otherwise reset the cursor. Pinning does not change a note's "updated" time,
+because it is not an edit.
+
+### Import adds and never overwrites
+
+A backup is one JSON file with a format name and version. Importing it adds
+its folders and notes: a folder with the same name in the same place is
+reused, and a note with the same title and text as one already here is
+skipped. Importing twice therefore changes nothing. Markdown files, from
+this app or from Obsidian and the like, go into the folder being viewed, and
+their front matter (title, tags, dates) is honoured. A note that is only in
+the trash does not count as already here, so importing is also a way to get
+it back.
+
+A single note downloads as `.md` with front matter, and it round-trips
+through import.
+
+### Two panes need a wider page
+
+`ToolShell` takes a `wide` option (72rem rather than 56rem) for tools laid
+out in two panes. On a phone the list and the open note replace each other,
+with a back button. Wide equations and code blocks scroll inside their own
+box, which needs the grid tracks to be `minmax(0, 1fr)`. The e2e suite
+caught the default letting one long equation widen the page at 360px.
+
 ## Phase 7 — pomodoro timer
 
 ### Phase 7 is the pomodoro timer
