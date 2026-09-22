@@ -155,6 +155,26 @@ export interface NoteRecord {
   updatedAt: number;
 }
 
+export interface AiMessageRecord {
+  role: "user" | "model";
+  text: string;
+  at: number;
+}
+
+/**
+ * One chat with the assistant. Messages are embedded: a conversation is
+ * always read and written whole, and one `put` saves an exchange atomically.
+ */
+export interface AiConversationRecord {
+  id: number;
+  /** Taken from the first thing the student asked. */
+  title: string;
+  mode: string;
+  createdAt: number;
+  updatedAt: number;
+  messages: AiMessageRecord[];
+}
+
 class StudentToolkitDatabase extends Dexie {
   semesters!: EntityTable<SemesterRecord, "id">;
   gradingScales!: EntityTable<GradingScaleRecord, "id">;
@@ -168,6 +188,7 @@ class StudentToolkitDatabase extends Dexie {
   pomodoroSessions!: EntityTable<PomodoroSessionRecord, "id">;
   noteFolders!: EntityTable<NoteFolderRecord, "id">;
   notes!: EntityTable<NoteRecord, "id">;
+  aiConversations!: EntityTable<AiConversationRecord, "id">;
 
   constructor() {
     super("student-toolkit");
@@ -217,6 +238,12 @@ class StudentToolkitDatabase extends Dexie {
     this.version(7).stores({
       noteFolders: "++id, parentId",
       notes: "++id, folderId, updatedAt, *tags",
+    });
+
+    // Version 8 — the AI assistant's chat history, kept on the device like
+    // everything else. Sorted by when it was last used, so that is the index.
+    this.version(8).stores({
+      aiConversations: "++id, updatedAt",
     });
   }
 }

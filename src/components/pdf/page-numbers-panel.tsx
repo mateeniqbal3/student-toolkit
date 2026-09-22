@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { baseName } from "@/lib/pdf/files";
 import type { NumberPosition } from "@/lib/pdf/operations";
 
-import { ChoiceGroup } from "./choice-group";
+import { ChoiceGroup } from "@/components/choice-group";
 import { OutputFiles, type OutputFile } from "./output-files";
 import { PdfChip, PdfPicker, usePdfSource } from "./pdf-source";
 import { runPdfJob } from "./pdf-worker-client";

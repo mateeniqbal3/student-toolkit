@@ -4,6 +4,92 @@ Non-blocking choices made while building, with the reasoning. Newest first.
 If a decision here turns out to be wrong, change it and amend the entry rather
 than deleting it — the reasoning is the useful part.
 
+## Phase 10 — AI study assistant
+
+### Bring your own key, and no server at all
+
+Asked for, and the right shape anyway: the student pastes their own free
+Gemini key on first open, it is kept in `localStorage`, and the browser calls
+Google directly. Google's API allows cross-origin requests from a page, so
+the Route Handler the earlier plan described is not needed, and the project
+now has **no server code whatsoever**. Hosting stays free with nothing to
+meter, and no prompt of anyone's passes through us.
+
+The cost is that the student needs a key. The alternative — a shared key —
+means a server to keep it secret, rate limiting to protect it, and a bill
+when the app is used. `.env.example` and `DEPLOY.md` described all of that;
+both now say there is nothing to configure.
+
+### Asking for the key is the first screen
+
+The assistant opens on instructions rather than a chat box: the three steps
+to get a key from `aistudio.google.com/apikey`, a field to paste it in, and
+what happens to it. The key is checked against Google's model list — which
+costs no tokens — before it is saved, so a mistyped key is caught there and
+then rather than looking like a broken app on the first question.
+
+### The models are what the API actually offered
+
+Written against what the key could reach in September 2026, checked rather
+than assumed: `gemini-3.6-flash` as the default, with `gemini-3.5-flash-lite`
+and `gemini-3.8-flash` as the fast and thorough options. `gemini-2.5-flash`,
+which older code would have reached for, is refused for new keys.
+
+Two things the API only revealed under test:
+
+- **`gemini-3.5-flash-lite` refuses `thinkingBudget: 0`** with a 400, while
+  the other models accept it. Each model now carries the least thinking it
+  will take, and the request asks for at least that.
+- **A 400 is not always a bad key.** It is also what a malformed request
+  returns, and telling a student their key is wrong when it is not sends them
+  off to fix the wrong thing. The message decides which it was.
+
+Every mode asks for no thinking except "Step by step", where it is worth
+waiting for.
+
+### A parser bug that quietly truncated every answer
+
+The first version dropped whatever sat in the buffer when the stream closed.
+Google's last event does not always end with a blank line, so the end of each
+answer was being lost — invisible in prose, obvious once the flashcards mode
+returned JSON that ended mid-word and would not parse. The parser now flushes
+what is left when the stream ends, and a unit test and a real request both
+cover it.
+
+This is why the phase was built against the real API rather than a mock: no
+mock of mine would have ended a stream that way.
+
+### Free keys have small daily limits
+
+The key used to build this hit `429` after about twenty requests on the
+Balanced model. The app says so plainly when it happens and suggests the Fast
+model, which is lighter. This is worth knowing before demonstrating it to
+anyone: the limits are Google's, per key, per day.
+
+### Modes are prompts, kept as data
+
+Six ways of studying — explain, summarize, flashcards, quiz, improve writing,
+step by step — each a system instruction in `lib/ai/modes.ts`, next to the
+copy it shows. They all push towards something a student can learn from
+rather than hand in, and the page carries a line saying answers can be wrong.
+
+Flashcards are asked for as JSON, which is no use to read, so those answers
+are rendered as the cards they describe and can be added straight into a deck
+in the flashcards tool, where the spaced repetition already lives. Parsing
+copes with code fences, chatter around the JSON, and the "Front — Back" lines
+a model falls back to.
+
+### What the tests cover, and what they cannot
+
+The e2e suite stands in for Google, so it needs no key and no connection: it
+can produce a refused key, a busy server that recovers on retry, a quota
+error and a request that never answers. What it cannot do is tell us the API
+still behaves as documented, which is what the real requests during the build
+were for.
+
+Chats are stored in IndexedDB (schema version 8) like everything else, and
+the key never goes near them.
+
 ## Phase 9 — PDF tools
 
 ### Nine operations, nine routes

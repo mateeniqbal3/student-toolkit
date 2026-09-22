@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { baseName, formatBytes, savedPercent } from "@/lib/pdf/files";
 import type { RasterPage } from "@/lib/pdf/operations";
 
-import { ChoiceGroup } from "./choice-group";
+import { ChoiceGroup } from "@/components/choice-group";
 import { OutputFiles, type OutputFile } from "./output-files";
 import { PdfChip, PdfPicker, usePdfSource } from "./pdf-source";
 import { runPdfJob } from "./pdf-worker-client";

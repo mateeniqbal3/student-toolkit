@@ -3,10 +3,7 @@
 Ten tools every university student needs, in one fast app that works without a
 connection. Free forever, no account, no ads, no tracking.
 
-> **Status:** in active development. The GPA calculator, percentage calculator,
-> unit converter, citation generator, timetable maker, flashcards, pomodoro
-> timer, notes organizer and PDF tools are built; the AI study assistant is
-> next.
+> **Status:** all ten tools are built.
 
 ## Why it exists
 
@@ -41,9 +38,11 @@ downloads exchange rates, and the citation generator sends a DOI, ISBN, arXiv
 or PubMed ID you paste to a public catalogue to fill in the details. Neither
 request carries anything about you, and both tools keep working offline.
 
-The AI assistant is the one exception, because it has to reach a language model.
-It sends only the message you type. You can also supply your own free API key in
-settings, in which case your messages go straight to the provider.
+The AI assistant is the one exception, because it has to reach a language
+model. It runs on your own free Google Gemini key, which you paste in on first
+use and which is stored only in your browser. Your message and that key go
+straight from your device to Google: there is no server of ours in between,
+because this app has none. Your chats are saved on your device alone.
 
 ## Local setup
 
@@ -56,9 +55,10 @@ npm install
 npm run dev
 ```
 
-No API keys are needed to run or develop any tool but the AI assistant. Copy `.env.example`
-to `.env.local` only if you want the AI assistant to use a shared key; see
-`DEPLOY.md` for what each variable does.
+No environment variables and no API keys are needed to run or develop any of
+it. The AI assistant asks for your own free
+[Gemini key](https://aistudio.google.com/apikey) the first time you open it and
+keeps it in your browser.
 
 ## Tech stack
 

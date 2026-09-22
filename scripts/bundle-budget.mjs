@@ -38,6 +38,7 @@ const BUDGETS = {
   "/pdf-tools/merge": 225,
   "/pdf-tools/organize": 225,
   "/pdf-tools/compress": 225,
+  "/ai-assistant": 245,
 };
 
 const server = spawn("npx", ["next", "start", "--port", String(PORT)], {

@@ -39,7 +39,7 @@ src/
     (tools)/gpa-calculator/
     (tools)/citation-generator/
     ...
-    api/ai/             the ONLY server code in the project
+                        (no server code: see "The AI boundary")
   components/
     ui/                 shadcn primitives, no app knowledge
     <feature>/          feature components, may read stores
@@ -73,7 +73,7 @@ seam Urdu translations plug into later.
 Two stores, chosen by size and access pattern.
 
 **localStorage** holds small synchronous preferences only: theme, last-used
-grading scale, last-used unit pair, BYOK key. These need to be readable before
+grading scale, last-used unit pair, the student's own Gemini key. These need to be readable before
 first paint, and they are tiny.
 
 **IndexedDB via Dexie** holds everything else. Planned schema:
@@ -109,18 +109,28 @@ Design notes:
 ## The AI boundary
 
 ```
-client -> POST /api/ai (Route Handler) -> provider adapter -> Gemini
+browser -> fetch (student's own key) -> Gemini
 ```
 
-`lib/ai/provider.ts` defines the interface; each adapter implements it, and
-swapping providers is one file plus one env var. The shared API key is read from
-server-only env and never reaches the client bundle.
+The assistant is bring-your-own-key, and there is no server route at all. The
+student pastes a free Gemini key on first open; it is kept in `localStorage`
+and sent, with the message, straight from their browser to Google, which
+allows cross-origin requests from a page. So the project has **no server code
+of any kind**, which is what keeps hosting free forever and makes the app
+portable to any static host.
 
-Three independent guards protect the shared key: a per-IP sliding-window limiter
-in the handler, a hard cap on output tokens per request, and a daily global token
-budget that flips the app to bring-your-own-key when exceeded. In BYOK mode the
-student's own key is read from localStorage and forwarded to the provider, so the
-app stays fully useful when the shared quota is gone.
+`lib/ai/gemini.ts` is the whole client: `fetch` against the REST API, no SDK.
+It streams over Server-Sent Events, retries a busy server, and maps failures
+onto what the student can do about them. `lib/ai/modes.ts` holds the system
+instruction for each way of studying, and `lib/ai/models.ts` the models on
+offer, including the least thinking each will accept.
+
+A shared key would mean a Route Handler to keep it secret, plus rate limiting
+and a token budget to protect it. That is a deliberate non-goal: it costs
+money and it would put student prompts through a server of ours.
+
+The earlier plan in this file described exactly that Route Handler. It was
+dropped in Phase 10; see `DECISIONS.md`.
 
 ## PDF tools
 
@@ -147,8 +157,8 @@ files.
 ## Offline
 
 A hand-rolled service worker precaches the app shell and the static assets for
-every offline tool. Navigation requests use stale-while-revalidate; `/api/ai` is never
-cached. Worker scripts are served as a fresh `Response` built from the cached
+every offline tool. Navigation requests use stale-while-revalidate; requests to
+Google are cross-origin and so pass straight through. Worker scripts are served as a fresh `Response` built from the cached
 body, because the bundler identifies a worker's code by the URL fragment and
 the Cache API ignores fragments — see Phase 9 in `DECISIONS.md`. Currency rates are cached in IndexedDB with a timestamp, and the UI shows
 "rates as of X" rather than failing when offline.
