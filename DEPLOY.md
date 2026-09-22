@@ -1,7 +1,8 @@
 # Deploy
 
-The app is a static-leaning Next.js build with exactly one server route
-(`/api/ai`). That makes it cheap to host and portable between providers.
+The app is a Next.js build with no server routes at all: every page is static
+and every tool runs in the browser. That makes it free to host and portable
+between providers.
 
 ## Vercel (primary)
 
@@ -26,32 +27,20 @@ project.
 1. Cloudflare dashboard, then Workers and Pages, Create, Pages, Connect to Git.
 2. Build command `npx @cloudflare/next-on-pages@1`, output directory
    `.vercel/output/static`, Node version `22`.
-3. Set the same environment variables under Settings, Environment variables.
-4. Under Settings, Functions, set the compatibility flag `nodejs_compat`.
+3. There is nothing to set under Settings, Environment variables.
 
-The one constraint this imposes on the code: `/api/ai` must stay compatible with
-the edge runtime, meaning `fetch` only and no Node-native modules. The provider
-adapters are written that way already, so this stays a five-minute switch rather
-than a rewrite.
+With no server route left in the project, this is a plain static deployment
+wherever it goes.
 
 ## Environment variables
 
-| Name                       | Required | Where  | Notes                                                                                                |
-| -------------------------- | -------- | ------ | ---------------------------------------------------------------------------------------------------- |
-| `AI_PROVIDER`              | no       | server | `gemini` (default), `groq`, `cloudflare`                                                             |
-| `GEMINI_API_KEY`           | no       | server | Free from [AI Studio](https://aistudio.google.com/apikey). Omit it and the assistant runs BYOK-only. |
-| `AI_MAX_OUTPUT_TOKENS`     | no       | server | Default 1024. Hard ceiling per request.                                                              |
-| `AI_RATE_LIMIT_PER_MINUTE` | no       | server | Default 8, per IP.                                                                                   |
-| `AI_DAILY_TOKEN_BUDGET`    | no       | server | Shared-key tokens per UTC day before BYOK-only kicks in.                                             |
-| `NEXT_PUBLIC_BYOK_ONLY`    | no       | client | `true` disables the shared key entirely.                                                             |
+There are none. Every tool runs in the browser, and the AI assistant uses the
+student's own Gemini key, kept in their browser and sent straight to Google.
+The app builds and runs with an empty environment, in development and in
+production alike.
 
-None of these are needed for any tool but the AI assistant. The app builds and runs with an empty
-environment.
-
-**The shared key must never appear in client code.** Only variables prefixed
-`NEXT_PUBLIC_` are exposed to the browser, and `GEMINI_API_KEY` deliberately is
-not one of them. `.env.local` is gitignored; `.env.example` is the committed
-template and holds no real values.
+That is also what keeps the hosting bill at zero: there is no server to run,
+no key of ours to protect, and no quota of ours to exhaust.
 
 ## Custom domain
 

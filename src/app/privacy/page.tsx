@@ -29,9 +29,11 @@ export default function PrivacyPage() {
         <p>Almost nothing. There are exactly three cases:</p>
         <ul className="ml-5 flex list-disc flex-col gap-2">
           <li>
-            <strong>The AI assistant.</strong> When you send a message, that message is forwarded to
-            a language model provider so it can answer. Nothing else from the app is included. If
-            you supply your own API key, the request goes to the provider with your key.
+            <strong>The AI assistant.</strong> It runs on your own free Google Gemini key, which you
+            paste in and which is stored only in this browser. Your message and that key go straight
+            from your device to Google, so Google can answer. They do not pass through us: this app
+            has no server. Nothing else from the app is included, and your chats are saved on your
+            device only.
           </li>
           <li>
             <strong>Currency rates.</strong> The unit converter fetches public exchange rates. That
