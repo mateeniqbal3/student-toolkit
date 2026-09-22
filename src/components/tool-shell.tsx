@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TOOL_ICONS } from "@/lib/tool-icons";
 import type { Tool } from "@/lib/tools";
+import { cn } from "@/lib/utils";
 
 /**
  * The frame every finished tool sits in: the heading a search result lands on,
@@ -14,11 +15,25 @@ import type { Tool } from "@/lib/tools";
  * It is a server component, so the icon and all of this copy are rendered into
  * the HTML and cost the browser no JavaScript.
  */
-export function ToolShell({ tool, children }: { tool: Tool; children: ReactNode }) {
+export function ToolShell({
+  tool,
+  wide = false,
+  children,
+}: {
+  tool: Tool;
+  /** For tools laid out in two panes, which need more than a reading width. */
+  wide?: boolean;
+  children: ReactNode;
+}) {
   const Icon = TOOL_ICONS[tool.slug];
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 sm:py-10 print:max-w-none print:p-0">
+    <main
+      className={cn(
+        "mx-auto flex w-full flex-1 flex-col gap-6 px-4 py-8 sm:py-10 print:max-w-none print:p-0",
+        wide ? "max-w-6xl" : "max-w-4xl",
+      )}
+    >
       <header className="flex flex-col gap-3 print:hidden">
         <div className="flex items-center gap-3">
           <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-xl">

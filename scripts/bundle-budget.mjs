@@ -33,6 +33,7 @@ const BUDGETS = {
   "/timetable-maker": 245,
   "/flashcards": 240,
   "/pomodoro-timer": 245,
+  "/notes": 245,
 };
 
 const server = spawn("npx", ["next", "start", "--port", String(PORT)], {

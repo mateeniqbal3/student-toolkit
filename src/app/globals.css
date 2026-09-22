@@ -222,6 +222,71 @@
 }
 
 /*
+ * Rendered notes. Written out here rather than pulling in a typography
+ * plugin: a dozen rules, all on role tokens, so both themes follow.
+ */
+@layer components {
+  .note-prose {
+    @apply text-foreground leading-relaxed break-words;
+  }
+  .note-prose > * + * {
+    @apply mt-3;
+  }
+  .note-prose :is(h1, h2, h3, h4, h5, h6) {
+    @apply font-display mt-6 leading-tight font-semibold first:mt-0;
+  }
+  .note-prose h1 {
+    @apply text-2xl;
+  }
+  .note-prose h2 {
+    @apply text-xl;
+  }
+  .note-prose h3 {
+    @apply text-lg;
+  }
+  .note-prose a {
+    @apply text-primary underline underline-offset-2;
+  }
+  .note-prose :is(ul, ol) {
+    @apply ps-6;
+  }
+  .note-prose ul {
+    @apply list-disc;
+  }
+  .note-prose ol {
+    @apply list-decimal;
+  }
+  .note-prose li + li {
+    @apply mt-1;
+  }
+  .note-prose blockquote {
+    @apply text-muted-foreground border-s-4 ps-4 italic;
+  }
+  .note-prose :not(pre) > code {
+    @apply bg-muted rounded px-1 py-0.5 font-mono text-[0.9em];
+  }
+  .note-prose pre {
+    @apply bg-muted overflow-x-auto rounded-lg p-3 font-mono text-sm leading-normal;
+  }
+  .note-prose hr {
+    @apply my-6;
+  }
+  .note-prose table {
+    @apply block w-full overflow-x-auto text-sm;
+  }
+  .note-prose :is(th, td) {
+    @apply border px-2 py-1 text-start;
+  }
+  .note-prose th {
+    @apply bg-muted font-semibold;
+  }
+  /* Wide equations scroll inside the note instead of widening the page. */
+  .note-prose .katex-display {
+    @apply overflow-x-auto overflow-y-hidden py-1;
+  }
+}
+
+/*
  * Printing. Only the timetable offers a print button, and a week grid is a
  * landscape document, so it gets a named page rather than turning every
  * printed page sideways.
