@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { baseName, formatBytes } from "@/lib/pdf/files";
 import type { EmbeddableImage, PageSize } from "@/lib/pdf/operations";
 
-import { ChoiceGroup } from "./choice-group";
+import { ChoiceGroup } from "@/components/choice-group";
 import { FilePicker } from "./file-picker";
 import { OutputFiles, type OutputFile } from "./output-files";
 import { runPdfJob } from "./pdf-worker-client";

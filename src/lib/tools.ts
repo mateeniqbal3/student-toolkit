@@ -122,7 +122,7 @@ export const TOOLS: readonly Tool[] = [
     tagline: "Explain, summarize, quiz and make flashcards",
     description:
       "Ask for a concept explained simply, summarize pasted text, generate flashcards you can export to Anki, take a quiz with explained answers, improve your writing, or work through a problem step by step.",
-    status: "coming-soon",
+    status: "available",
     offline: false,
     keywords: ["ai tutor", "study assistant", "flashcards", "quiz", "summarize"],
   },

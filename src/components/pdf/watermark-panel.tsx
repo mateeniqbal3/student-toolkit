@@ -10,7 +10,7 @@ import { baseName } from "@/lib/pdf/files";
 import type { WatermarkOptions } from "@/lib/pdf/operations";
 import { parsePageRanges, rangeIndexes } from "@/lib/pdf/ranges";
 
-import { ChoiceGroup } from "./choice-group";
+import { ChoiceGroup } from "@/components/choice-group";
 import { OutputFiles, type OutputFile } from "./output-files";
 import { PdfChip, PdfPicker, usePdfSource } from "./pdf-source";
 import { runPdfJob } from "./pdf-worker-client";
