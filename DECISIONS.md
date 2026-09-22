@@ -4,6 +4,115 @@ Non-blocking choices made while building, with the reasoning. Newest first.
 If a decision here turns out to be wrong, change it and amend the entry rather
 than deleting it — the reasoning is the useful part.
 
+## Phase 9 — PDF tools
+
+### Nine operations, nine routes
+
+"Merge PDF" and "compress PDF" are searched for by name, so each operation
+has its own page — `/pdf-tools/merge`, `/pdf-tools/compress` — built at
+deploy time from a registry beside the tool registry, with its own title,
+description and place in the sitemap. `/pdf-tools` is a hub that links to
+them. Each panel is a separate chunk, so the merge page does not carry the
+organiser's code. The hub costs 191.8KB and an operation page 211.6KB,
+against budgets of 200KB and 225KB.
+
+`ToolShell` gained an optional heading and a "back" link so an operation
+page can name itself in its `h1` while still being part of the PDF tool.
+
+### pdf-lib in a worker, pdf.js for everything that reads
+
+pdf-lib does the editing, in a Web Worker, so merging or stamping a 50MB
+file never freezes the page: this is what `ARCHITECTURE.md` always planned
+`src/workers/` for. The operations themselves are pure functions from bytes
+to bytes, which is what lets the unit tests run them on real PDFs in Node.
+pdf.js does everything that needs to see the page: thumbnails, pages as
+images, text.
+
+pdf-lib was last released in 2022. It is stable, it does what is needed, and
+`@cantoo/pdf-lib` is a maintained drop-in fork if that ever stops being
+true.
+
+### pdf.js's legacy build, for phones that are a few years old
+
+The modern pdf.js build calls `Promise.try`, which arrived in Safari 18.2
+and Chrome 128. Students on an older iPhone or a mid-range Android would
+have got a blank page. The legacy build ships the polyfills and costs a
+little more; for this audience that is the right trade. Node 22 lacks
+`Promise.try` too, so the unit tests caught it before any browser did.
+
+### The service worker was handing one worker the other's code
+
+The PDF pages are the first to run two Web Workers at once, and that
+uncovered a bug in the offline caching. Turbopack starts every worker from
+one shared bootstrap script and says which chunks to load in the URL's
+fragment (`…/turbopack-worker.js#params=…`). The Cache API ignores
+fragments, so the second worker was served the first one's cached response —
+fragment included — and booted the wrong half of the app. pdf-lib's worker
+would start pdf.js's message handler, and the job would hang forever with no
+error.
+
+Worker scripts are now served as a fresh `Response` built from the cached
+body. A response made that way has no URL of its own, so the browser keeps
+the one the worker asked for. An e2e test reloads the page first, so the
+service worker is in charge, and fails without the fix.
+
+This only ever happened on a second visit, which is exactly the visit a
+student would make.
+
+### Two kinds of compression
+
+Light rewrites the file's structure and keeps text selectable; it saves
+little on an already-tidy PDF, and the page says so rather than offering a
+download that is no smaller. Strong and Smallest redraw each page as a JPEG
+at 144 or 96 DPI and rebuild the PDF around it, which is what actually
+shrinks the scans and phone photos students are asked to upload, at the cost
+of selectable text. The page says that in as many words.
+
+Redrawing also means Compress, PDF to images and Extract text work on PDFs
+that are locked against editing, because pdf.js opens those and pdf-lib does
+not. Operations that edit check the file with pdf-lib as soon as it is
+chosen, so a locked file is refused before the student sets everything up,
+with a message suggesting printing it to a new PDF.
+
+### Images are decoded, not embedded as they arrive
+
+Every image goes through `createImageBitmap` with `imageOrientation:
+"from-image"` and back out of a canvas. That applies the EXIF rotation phone
+cameras write, which is the difference between a photo of homework appearing
+upright or sideways. Images are scaled to at most 3000 pixels on the long
+side — about 250 DPI on A4, sharper than any printer a student will use —
+which keeps twenty photos inside an upload limit. PNGs stay PNGs so
+screenshots keep their sharp edges; everything else becomes JPEG at 0.9,
+composited onto white so a transparent GIF does not turn black.
+
+### Stamped text is placed where the reader sees it
+
+A page with a `/Rotate` is drawn in unrotated coordinates and turned for
+display, so "the bottom of the page" is not where it sounds. `toPageSpace`
+maps what the reader sees onto the page's own coordinates, and the unit
+tests check a page number lands at the bottom of a page rotated 90°, read
+back with pdf.js.
+
+The built-in PDF fonts cover Latin text only. Watermark and page-number text
+outside that is refused with an explanation rather than silently garbled.
+Urdu watermarks would need an embedded Unicode font, which is a megabyte;
+when this app is translated, that is the phase to weigh it in.
+
+### No OCR
+
+Extracting text from a scan needs OCR, which means Tesseract: several
+megabytes of WASM plus a language model per language. That is a phase of its
+own, not a checkbox here, so a PDF with no text says exactly that and
+explains why.
+
+### Offline after first use
+
+pdf-lib and pdf.js are only fetched when a file is chosen, and the service
+worker caches them from then on. They are deliberately not warmed at idle
+like the notes renderer: together they are about 700KB, and most visitors to
+a PDF page use one operation, not all nine. So the first use of PDF tools
+needs a connection, and every use afterwards does not.
+
 ## Phase 8 — notes organizer
 
 ### Phase 8 is the notes organizer
