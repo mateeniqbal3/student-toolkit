@@ -106,6 +106,32 @@ export interface CardRecord {
   srs: SrsState;
 }
 
+/** Something to work on during focus sessions. */
+export interface TaskRecord {
+  id: number;
+  title: string;
+  /** Pomodoros the student expects it to take, if they said. */
+  estimate: number | null;
+  /** Full pomodoros finished while this was the current task. */
+  pomodoros: number;
+  /** When it was ticked off, or null while open. Not a boolean, which IndexedDB cannot index. */
+  doneAt: number | null;
+  createdAt: number;
+  updatedAt: number;
+}
+
+/** A stretch of focus, full or cut short. Breaks are not recorded. */
+export interface PomodoroSessionRecord {
+  id: number;
+  startedAt: number;
+  endedAt: number;
+  /** Focused time, pauses excluded. */
+  durationMs: number;
+  /** Whether it ran its full length and so counts as a pomodoro. */
+  completed: boolean;
+  taskId: number | null;
+}
+
 class StudentToolkitDatabase extends Dexie {
   semesters!: EntityTable<SemesterRecord, "id">;
   gradingScales!: EntityTable<GradingScaleRecord, "id">;
@@ -115,6 +141,8 @@ class StudentToolkitDatabase extends Dexie {
   timetables!: EntityTable<TimetableRecord, "id">;
   decks!: EntityTable<DeckRecord, "id">;
   cards!: EntityTable<CardRecord, "id">;
+  tasks!: EntityTable<TaskRecord, "id">;
+  pomodoroSessions!: EntityTable<PomodoroSessionRecord, "id">;
 
   constructor() {
     super("student-toolkit");
@@ -149,6 +177,13 @@ class StudentToolkitDatabase extends Dexie {
     this.version(5).stores({
       decks: "++id, name, updatedAt",
       cards: "++id, deckId",
+    });
+
+    // Version 6 — the pomodoro timer. Sessions are indexed by start time for
+    // the weekly chart; the task list is short and filtered in memory.
+    this.version(6).stores({
+      tasks: "++id, createdAt",
+      pomodoroSessions: "++id, startedAt",
     });
   }
 }
