@@ -132,6 +132,29 @@ export interface PomodoroSessionRecord {
   taskId: number | null;
 }
 
+/** A folder in the notes tree. Stored flat; `parentId` makes the tree. */
+export interface NoteFolderRecord {
+  id: number;
+  name: string;
+  parentId: number | null;
+  createdAt: number;
+}
+
+export interface NoteRecord {
+  id: number;
+  title: string;
+  /** Markdown source. */
+  body: string;
+  folderId: number | null;
+  /** Normalised: lower case, hyphens for spaces, no repeats. */
+  tags: string[];
+  pinned: boolean;
+  /** When it went to the trash, or null. A time, because IndexedDB cannot index booleans. */
+  trashedAt: number | null;
+  createdAt: number;
+  updatedAt: number;
+}
+
 class StudentToolkitDatabase extends Dexie {
   semesters!: EntityTable<SemesterRecord, "id">;
   gradingScales!: EntityTable<GradingScaleRecord, "id">;
@@ -143,6 +166,8 @@ class StudentToolkitDatabase extends Dexie {
   cards!: EntityTable<CardRecord, "id">;
   tasks!: EntityTable<TaskRecord, "id">;
   pomodoroSessions!: EntityTable<PomodoroSessionRecord, "id">;
+  noteFolders!: EntityTable<NoteFolderRecord, "id">;
+  notes!: EntityTable<NoteRecord, "id">;
 
   constructor() {
     super("student-toolkit");
@@ -184,6 +209,14 @@ class StudentToolkitDatabase extends Dexie {
     this.version(6).stores({
       tasks: "++id, createdAt",
       pomodoroSessions: "++id, startedAt",
+    });
+
+    // Version 7 — notes. Search, filtering and sorting all happen in memory
+    // over every note, so only moving notes out of a folder needs an index;
+    // tags are multi-entry for the same reason a later tag rename would.
+    this.version(7).stores({
+      noteFolders: "++id, parentId",
+      notes: "++id, folderId, updatedAt, *tags",
     });
   }
 }
