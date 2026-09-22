@@ -4,8 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 
 /**
  * The current time as state, so rendering stays pure. It ticks on an
- * interval — a learning card due in ten minutes appears without a reload —
- * and `refresh` moves it on immediately after an answer.
+ * interval — a flashcard due in ten minutes appears without a reload, and
+ * today's focus total rolls over at midnight — and `refresh` moves it on
+ * immediately after something changes.
  */
 export function useNow(intervalMs = 15_000): [number, () => void] {
   const [now, setNow] = useState(() => Date.now());

@@ -15,7 +15,7 @@ import {
 } from "@/lib/flashcards/scheduler";
 
 import { CountPills } from "./count-pills";
-import { useNow } from "./use-now";
+import { useNow } from "@/hooks/use-now";
 
 const GRADE_LABELS: Record<Grade, string> = {
   again: "Again",
