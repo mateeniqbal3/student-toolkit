@@ -92,7 +92,7 @@ export const TOOLS: readonly Tool[] = [
     tagline: "Focus sessions that stay accurate when your phone sleeps",
     description:
       "A pomodoro timer with configurable work and break lengths, a linked task list, and a weekly focus-time chart. Timing is based on timestamps rather than interval counting, so it does not drift when the tab is backgrounded.",
-    status: "coming-soon",
+    status: "available",
     offline: true,
     keywords: ["pomodoro", "focus timer", "study timer", "productivity"],
   },

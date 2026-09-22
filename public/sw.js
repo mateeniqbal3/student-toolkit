@@ -107,6 +107,20 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
+// A tap on a pomodoro notification brings the timer back into view, opening
+// it if the tab was closed.
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    (async () => {
+      const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      const timer = windows.find((client) => new URL(client.url).pathname === "/pomodoro-timer");
+      if (timer) return timer.focus();
+      return self.clients.openWindow("/pomodoro-timer");
+    })(),
+  );
+});
+
 // Lets the page trigger an immediate update instead of waiting for a reload.
 self.addEventListener("message", (event) => {
   if (event.data === "SKIP_WAITING") self.skipWaiting();
