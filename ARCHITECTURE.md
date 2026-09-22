@@ -87,8 +87,8 @@ first paint, and they are tiny.
 | `folders`          | `++id, parentId, order`                                             | note folder tree                           |
 | `decks`            | `++id, name, updatedAt`                                             | flashcard decks and their daily limit (v5) |
 | `cards`            | `++id, deckId`                                                      | front, back and scheduling state (v5)      |
-| `pomodoroSessions` | `++id, startedAt, taskId`                                           | completed focus sessions                   |
-| `tasks`            | `++id, isDone, updatedAt`                                           | pomodoro task list                         |
+| `pomodoroSessions` | `++id, startedAt`                                                   | focus sessions, full or cut short (v6)     |
+| `tasks`            | `++id, createdAt`                                                   | pomodoro task list (v6)                    |
 | `citations`        | `++id, projectId, createdAt`                                        | CSL-JSON source records (landed, v3)       |
 | `citationProjects` | `++id, name`                                                        | bibliographies and their style (v3)        |
 | `aiConversations`  | `++id, updatedAt`                                                   | chat history, embedded messages            |

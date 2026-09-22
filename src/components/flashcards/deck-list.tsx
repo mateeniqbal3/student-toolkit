@@ -10,7 +10,7 @@ import { addDeck, type CardRecord, type DeckRecord } from "@/lib/db/flashcards";
 import { dayCounts } from "@/lib/flashcards/queue";
 
 import { CountPills } from "./count-pills";
-import { useNow } from "./use-now";
+import { useNow } from "@/hooks/use-now";
 
 export function DeckList({
   decks,

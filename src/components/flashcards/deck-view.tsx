@@ -25,7 +25,7 @@ import { exportCards } from "@/lib/flashcards/transfer";
 import { CardForm } from "./card-form";
 import { CountPills } from "./count-pills";
 import { ImportPanel } from "./import-panel";
-import { useNow } from "./use-now";
+import { useNow } from "@/hooks/use-now";
 
 export function DeckView({
   deck,
