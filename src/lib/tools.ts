@@ -112,7 +112,7 @@ export const TOOLS: readonly Tool[] = [
     tagline: "Merge, split, compress and convert, all in your browser",
     description:
       "Merge, split, reorder, rotate and delete PDF pages, convert images to PDF and back, extract text, add page numbers or a watermark, and compress. Every file is processed in your browser and never uploaded.",
-    status: "coming-soon",
+    status: "available",
     offline: true,
     keywords: ["pdf", "merge pdf", "split pdf", "compress pdf", "watermark"],
   },

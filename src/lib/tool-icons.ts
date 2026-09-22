@@ -1,16 +1,27 @@
 import {
   Calculator,
   CalendarDays,
+  Combine,
+  FileImage,
   FileText,
+  Hash,
+  Images,
+  LayoutGrid,
   Layers,
+  Minimize2,
   NotebookPen,
   Percent,
   Quote,
   Ruler,
+  Scissors,
   Sparkles,
+  Stamp,
+  TextCursorInput,
   Timer,
   type LucideIcon,
 } from "lucide-react";
+
+import type { PdfOperationSlug } from "./pdf-tools";
 
 /**
  * Icons live apart from the tool registry on purpose.
@@ -32,4 +43,16 @@ export const TOOL_ICONS: Record<string, LucideIcon> = {
   notes: NotebookPen,
   "pdf-tools": FileText,
   "ai-assistant": Sparkles,
+};
+
+export const PDF_OPERATION_ICONS: Record<PdfOperationSlug, LucideIcon> = {
+  merge: Combine,
+  split: Scissors,
+  organize: LayoutGrid,
+  compress: Minimize2,
+  "images-to-pdf": FileImage,
+  "pdf-to-images": Images,
+  "extract-text": TextCursorInput,
+  "page-numbers": Hash,
+  watermark: Stamp,
 };
