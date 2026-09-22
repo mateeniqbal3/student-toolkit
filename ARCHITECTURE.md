@@ -122,9 +122,33 @@ budget that flips the app to bring-your-own-key when exceeded. In BYOK mode the
 student's own key is read from localStorage and forwarded to the provider, so the
 app stays fully useful when the shared quota is gone.
 
+## PDF tools
+
+Each operation has its own indexable route under `/pdf-tools`, listed in
+`lib/pdf-tools.ts` and built at deploy time, with `/pdf-tools` as a hub. Each
+operation's panel is a separate chunk.
+
+```
+panel -> runPdfJob -> pdf.worker.ts -> lib/pdf/operations.ts (pdf-lib)
+      -> components/pdf/pdfjs.ts -> pdfjs.worker.ts (pdf.js)
+```
+
+`lib/pdf/operations.ts` is pure: bytes in, bytes out, no browser APIs, which
+is why the unit tests can run it on real PDFs in Node. pdf-lib runs in a
+worker so a large file cannot freeze the page; pdf.js has its own worker and
+handles anything that must see the page — thumbnails, pages as images, text.
+Both libraries load on first use, never with the page.
+
+Operations that edit a PDF check it with pdf-lib as soon as it is chosen, so
+a file locked against editing is refused up front. Operations that only read
+(compress, PDF to images, extract text) go through pdf.js, which opens those
+files.
+
 ## Offline
 
 A hand-rolled service worker precaches the app shell and the static assets for
 every offline tool. Navigation requests use stale-while-revalidate; `/api/ai` is never
-cached. Currency rates are cached in IndexedDB with a timestamp, and the UI shows
+cached. Worker scripts are served as a fresh `Response` built from the cached
+body, because the bundler identifies a worker's code by the URL fragment and
+the Cache API ignores fragments — see Phase 9 in `DECISIONS.md`. Currency rates are cached in IndexedDB with a timestamp, and the UI shows
 "rates as of X" rather than failing when offline.

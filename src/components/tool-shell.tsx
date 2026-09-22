@@ -1,4 +1,4 @@
-import { ArrowLeft, WifiOff } from "lucide-react";
+import { ArrowLeft, WifiOff, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -18,14 +18,20 @@ import { cn } from "@/lib/utils";
 export function ToolShell({
   tool,
   wide = false,
+  heading,
+  back,
   children,
 }: {
   tool: Tool;
   /** For tools laid out in two panes, which need more than a reading width. */
   wide?: boolean;
+  /** A page within a tool (one PDF operation) names itself instead of the tool. */
+  heading?: { title: string; tagline: string; icon: LucideIcon };
+  /** A way back to the tool from one of its pages, shown above the heading. */
+  back?: { href: string; label: string };
   children: ReactNode;
 }) {
-  const Icon = TOOL_ICONS[tool.slug];
+  const Icon = heading?.icon ?? TOOL_ICONS[tool.slug];
 
   return (
     <main
@@ -35,16 +41,25 @@ export function ToolShell({
       )}
     >
       <header className="flex flex-col gap-3 print:hidden">
+        {back ? (
+          <Link
+            href={back.href}
+            className="text-muted-foreground hover:text-foreground flex w-fit items-center gap-1 text-sm"
+          >
+            <ArrowLeft className="size-3.5 rtl:rotate-180" aria-hidden />
+            {back.label}
+          </Link>
+        ) : null}
         <div className="flex items-center gap-3">
           <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-xl">
-            <Icon className="size-5" aria-hidden />
+            {Icon ? <Icon className="size-5" aria-hidden /> : null}
           </span>
           <h1 className="font-display text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-            {tool.name}
+            {heading?.title ?? tool.name}
           </h1>
         </div>
 
-        <p className="text-muted-foreground text-pretty">{tool.tagline}</p>
+        <p className="text-muted-foreground text-pretty">{heading?.tagline ?? tool.tagline}</p>
 
         {tool.offline ? (
           <Badge variant="secondary" className="w-fit gap-1.5">

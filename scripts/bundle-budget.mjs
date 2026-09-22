@@ -34,6 +34,10 @@ const BUDGETS = {
   "/flashcards": 240,
   "/pomodoro-timer": 245,
   "/notes": 245,
+  "/pdf-tools": 200,
+  "/pdf-tools/merge": 225,
+  "/pdf-tools/organize": 225,
+  "/pdf-tools/compress": 225,
 };
 
 const server = spawn("npx", ["next", "start", "--port", String(PORT)], {

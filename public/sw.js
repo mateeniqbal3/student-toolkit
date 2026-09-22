@@ -56,6 +56,23 @@ async function cacheFirst(request, cacheName) {
   return response;
 }
 
+/*
+ * Web Workers are started through one shared bootstrap script, told which
+ * code to load by the URL's fragment (…/turbopack-worker.js#params=…). The
+ * Cache API ignores fragments, so a cached response still carries the URL,
+ * fragment and all, of whichever worker fetched it first, and a worker given
+ * that response boots the other worker's code. The PDF tools run two workers
+ * on one page and hung exactly this way. A copy built from the body has no
+ * URL of its own, so the browser keeps the one the worker asked for.
+ */
+function withoutUrl(response) {
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
+
 async function staleWhileRevalidate(request, cacheName) {
   const cache = await caches.open(cacheName);
   const hit = await cache.match(request);
@@ -98,7 +115,8 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (url.pathname.startsWith("/_next/static/")) {
-    event.respondWith(cacheFirst(request, STATIC_CACHE));
+    const response = cacheFirst(request, STATIC_CACHE);
+    event.respondWith(request.destination === "worker" ? response.then(withoutUrl) : response);
     return;
   }
 
